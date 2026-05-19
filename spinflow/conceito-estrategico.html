@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpinFlow — Conceito Estratégico</title>
+<style>
+  :root {
+    --azul: #0ea5e9;
+    --azul-escuro: #0369a1;
+    --azul-deep: #082f49;
+    --roxo: #8b5cf6;
+    --roxo-escuro: #5b21b6;
+    --verde: #10b981;
+    --verde-escuro: #065f46;
+    --laranja: #f59e0b;
+    --rosa: #ec4899;
+    --cinza: #64748b;
+    --bg: #0a0f1e;
+    --bg2: #0f172a;
+    --bg3: #1e293b;
+    --texto: #f1f5f9;
+    --texto2: #94a3b8;
+    --borda: #1e293b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--texto);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVEGAÇÃO ─── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--borda);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 56px;
+  }
+  .nav-logo {
+    font-size: 1.1rem; font-weight: 700; letter-spacing: .5px;
+    background: linear-gradient(135deg, var(--azul), var(--roxo));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a {
+    color: var(--texto2); text-decoration: none; font-size: .82rem;
+    letter-spacing: .3px; transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--azul); }
+
+  /* ─── SEÇÕES GERAIS ─── */
+  section { padding: 80px 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .section-tag {
+    display: inline-block; font-size: .72rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 1rem;
+    background: rgba(14,165,233,.15); color: var(--azul);
+    border: 1px solid rgba(14,165,233,.3);
+  }
+  h2.section-title {
+    font-size: 2rem; font-weight: 800; line-height: 1.2;
+    margin-bottom: .6rem;
+  }
+  p.section-sub {
+    color: var(--texto2); font-size: 1rem; line-height: 1.65;
+    max-width: 600px; margin-bottom: 2.5rem;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,.12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 50%, rgba(139,92,246,.08) 0%, transparent 60%),
+                var(--bg);
+  }
+  .hero-content { position: relative; z-index:2; text-align: center; width: 100%; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(14,165,233,.1); border: 1px solid rgba(14,165,233,.3);
+    border-radius: 100px; padding: 6px 16px; font-size: .8rem;
+    color: var(--azul); margin-bottom: 1.5rem; letter-spacing: .5px;
+  }
+  .hero-badge span { width:6px; height:6px; background:var(--azul); border-radius:50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; line-height: 1.1;
+    letter-spacing: -1px; margin-bottom: 1rem;
+  }
+  .hero-gradient {
+    background: linear-gradient(135deg, #fff 30%, var(--azul) 70%, var(--roxo));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 1.1rem; color: var(--texto2); max-width: 580px;
+    margin: 0 auto 2.5rem; line-height: 1.7;
+  }
+  .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 28px; border-radius: 8px; font-size: .9rem;
+    font-weight: 600; cursor: pointer; border: none; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px; transition: all .2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--azul), var(--roxo));
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+  .btn-ghost {
+    background: rgba(255,255,255,.06); color: var(--texto);
+    border: 1px solid var(--borda);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,.1); }
+
+  /* ─── GRADE HERO STATS ─── */
+  .hero-stats {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 3.5rem; padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,.07);
+  }
+  .stat { text-align: center; }
+  .stat-n { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--azul), var(--roxo)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-l { font-size: .78rem; color: var(--texto2); margin-top: 2px; letter-spacing: .5px; }
+
+  /* ─── HIERARQUIA ─── */
+  #hierarquia { background: var(--bg2); }
+  .hierarquia-grid {
+    display: flex; gap: 0; justify-content: center; align-items: stretch;
+    flex-wrap: nowrap; overflow-x: auto; padding-bottom: 1rem;
+  }
+  .nivel-card {
+    flex: 1; min-width: 120px; max-width: 160px;
+    position: relative; display: flex; flex-direction: column;
+    align-items: center; padding: 1.5rem 1rem;
+    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg3); transition: all .3s;
+  }
+  .nivel-card:not(:last-child)::after {
+    content: '→'; position: absolute; right: -14px; top: 50%;
+    transform: translateY(-50%); font-size: 1.2rem; color: var(--azul); z-index:2;
+    font-weight: 900;
+  }
+  .nivel-card:first-child { border-radius: 12px 0 0 12px; }
+  .nivel-card:last-child { border-radius: 0 12px 12px 0; }
+  .nivel-card:hover { background: rgba(14,165,233,.08); border-color: var(--azul); transform: translateY(-4px); }
+  .nivel-icon { font-size: 1.8rem; margin-bottom: .5rem; }
+  .nivel-num { font-size: .65rem; color: var(--azul); font-weight: 700; letter-spacing: 1.5px; margin-bottom: .3rem; }
+  .nivel-nome { font-size: .85rem; font-weight: 700; text-align: center; }
+  .nivel-desc { font-size: .7rem; color: var(--texto2); text-align: center; margin-top: .4rem; line-height: 1.4; }
+
+  /* ─── FASES ─── */
+  #fases { background: var(--bg); }
+  .fases-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+  .fase-card {
+    border-radius: 12px; padding: 1.5rem 1.2rem;
+    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg3); position: relative;
+    overflow: hidden; transition: all .3s;
+  }
+  .fase-card::before {
+    content: ''; position: absolute; top:0; left:0; right:0; height: 3px;
+  }
+  .fase-card:nth-child(1)::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+  .fase-card:nth-child(2)::before { background: linear-gradient(90deg, #0ea5e9, #06b6d4); }
+  .fase-card:nth-child(3)::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .fase-card:nth-child(4)::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+  .fase-card:nth-child(5)::before { background: linear-gradient(90deg, #ec4899, #be185d); }
+  .fase-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.18); }
+  .fase-num { font-size: .65rem; font-weight: 700; letter-spacing: 2px; color: var(--texto2); margin-bottom: .3rem; }
+  .fase-nome { font-size: 1rem; font-weight: 800; margin-bottom: .6rem; }
+  .fase-card:nth-child(1) .fase-nome { color: #a78bfa; }
+  .fase-card:nth-child(2) .fase-nome { color: var(--azul); }
+  .fase-card:nth-child(3) .fase-nome { color: var(--verde); }
+  .fase-card:nth-child(4) .fase-nome { color: var(--laranja); }
+  .fase-card:nth-child(5) .fase-nome { color: var(--rosa); }
+  .fase-desc { font-size: .78rem; color: var(--texto2); line-height: 1.5; margin-bottom: .8rem; }
+  .fase-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .fase-tag {
+    font-size: .65rem; padding: 2px 8px; border-radius: 20px;
+    background: rgba(255,255,255,.06); color: var(--texto2);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .fase-icon { font-size: 1.6rem; margin-bottom: .6rem; }
+
+  /* ─── PRINCÍPIOS ─── */
+  #principios { background: var(--bg2); }
+  .principios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .principio-card {
+    border-radius: 12px; padding: 1.4rem;
+    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg3); transition: all .3s;
+    position: relative; overflow: hidden;
+  }
+  .principio-card::after {
+    content: attr(data-num);
+    position: absolute; right: 1rem; bottom: .8rem;
+    font-size: 3rem; font-weight: 900; opacity: .04; color: #fff;
+    line-height: 1;
+  }
+  .principio-card:hover { border-color: rgba(14,165,233,.4); transform: translateY(-2px); }
+  .p-icon { font-size: 1.4rem; margin-bottom: .5rem; }
+  .p-titulo { font-size: .9rem; font-weight: 700; margin-bottom: .4rem; color: var(--texto); }
+  .p-desc { font-size: .75rem; color: var(--texto2); line-height: 1.55; }
+  .p-num-badge {
+    display: inline-block; font-size: .6rem; font-weight: 700;
+    background: rgba(14,165,233,.15); color: var(--azul);
+    border: 1px solid rgba(14,165,233,.25); border-radius: 4px;
+    padding: 1px 6px; margin-bottom: .5rem;
+  }
+
+  /* ─── PADRÕES DE FLUXO ─── */
+  #padroes { background: var(--bg); }
+  .padroes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .padrao-card {
+    border-radius: 12px; padding: 1.4rem;
+    background: var(--bg3); border: 1px solid rgba(255,255,255,.07);
+    transition: all .3s;
+  }
+  .padrao-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-2px); }
+  .padrao-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+  .padrao-nome { font-size: .9rem; font-weight: 700; color: #a78bfa; margin-bottom: .4rem; }
+  .padrao-aplica {
+    font-size: .65rem; color: var(--azul); font-weight: 600;
+    letter-spacing: .5px; margin-bottom: .5rem;
+    background: rgba(14,165,233,.1); border-radius: 4px; padding: 2px 6px;
+    display: inline-block;
+  }
+  .padrao-desc { font-size: .75rem; color: var(--texto2); line-height: 1.55; }
+  .padrao-diagrama {
+    margin-top: .8rem; font-size: .65rem; font-family: monospace;
+    color: var(--verde); background: rgba(16,185,129,.07);
+    border: 1px solid rgba(16,185,129,.15); border-radius: 6px;
+    padding: .6rem .8rem; line-height: 1.6;
+  }
+
+  /* ─── DUPLA NATUREZA ─── */
+  #aplicacao { background: var(--bg2); }
+  .dupla-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .dupla-card {
+    border-radius: 16px; padding: 2rem;
+    border: 1px solid rgba(255,255,255,.07);
+    position: relative; overflow: hidden; transition: all .3s;
+  }
+  .dupla-card.uso-proprio {
+    background: linear-gradient(135deg, rgba(14,165,233,.08), rgba(6,182,212,.04));
+  }
+  .dupla-card.uso-cliente {
+    background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(236,72,153,.04));
+  }
+  .dupla-card:hover { transform: translateY(-3px); }
+  .dupla-tag {
+    display: inline-block; font-size: .7rem; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px;
+    border-radius: 6px; margin-bottom: 1rem;
+  }
+  .uso-proprio .dupla-tag { background: rgba(14,165,233,.2); color: var(--azul); }
+  .uso-cliente .dupla-tag { background: rgba(139,92,246,.2); color: #a78bfa; }
+  .dupla-titulo { font-size: 1.3rem; font-weight: 800; margin-bottom: .6rem; }
+  .dupla-desc { font-size: .85rem; color: var(--texto2); line-height: 1.65; margin-bottom: 1.2rem; }
+  .dupla-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+  .dupla-list li {
+    font-size: .82rem; color: var(--texto2);
+    display: flex; align-items: flex-start; gap: .5rem; line-height: 1.45;
+  }
+  .dupla-list li::before { content: '→'; color: var(--azul); font-weight: 700; flex-shrink: 0; }
+  .uso-cliente .dupla-list li::before { color: #a78bfa; }
+
+  /* ─── AGENTS ─── */
+  #agents { background: var(--bg); }
+  .agents-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .agent-card {
+    border-radius: 12px; padding: 1.2rem 1rem;
+    background: var(--bg3); border: 1px solid rgba(255,255,255,.07);
+    text-align: center; transition: all .3s;
+  }
+  .agent-card:hover { transform: translateY(-3px); border-color: rgba(139,92,246,.35); }
+  .agent-avatar { font-size: 2rem; margin-bottom: .5rem; }
+  .agent-nome { font-size: .9rem; font-weight: 800; color: #a78bfa; margin-bottom: .3rem; }
+  .agent-dom { font-size: .72rem; color: var(--texto2); line-height: 1.4; }
+
+  /* ─── ROADMAP ─── */
+  #roadmap { background: var(--bg2); }
+  .roadmap-line {
+    display: flex; gap: 0; position: relative;
+  }
+  .roadmap-line::before {
+    content: ''; position: absolute;
+    top: 28px; left: 28px; right: 28px; height: 2px;
+    background: linear-gradient(90deg, var(--verde), var(--azul), rgba(255,255,255,.1));
+  }
+  .roadmap-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 0 .8rem;
+  }
+  .roadmap-dot {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: .8rem; position: relative; z-index:2;
+    border: 2px solid;
+  }
+  .done .roadmap-dot { background: rgba(16,185,129,.2); border-color: var(--verde); }
+  .active .roadmap-dot { background: rgba(14,165,233,.2); border-color: var(--azul); animation: ring 2s infinite; }
+  .next .roadmap-dot { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.15); }
+  @keyframes ring { 0%,100%{box-shadow:0 0 0 0 rgba(14,165,233,.3)} 50%{box-shadow:0 0 0 8px rgba(14,165,233,0)} }
+  .roadmap-label { font-size: .78rem; font-weight: 700; margin-bottom: .3rem; }
+  .done .roadmap-label { color: var(--verde); }
+  .active .roadmap-label { color: var(--azul); }
+  .next .roadmap-label { color: var(--texto2); }
+  .roadmap-desc { font-size: .68rem; color: var(--texto2); line-height: 1.45; }
+
+  /* ─── TECOFÁCIL ─── */
+  .tecnofacil-band {
+    background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(139,92,246,.1));
+    border: 1px solid rgba(14,165,233,.2); border-radius: 16px;
+    padding: 2rem; margin-top: 2.5rem; display: flex; align-items: center; gap: 2rem;
+  }
+  .tf-icon { font-size: 2.5rem; flex-shrink:0; }
+  .tf-titulo { font-size: 1.1rem; font-weight: 800; color: var(--azul); margin-bottom: .4rem; }
+  .tf-desc { font-size: .82rem; color: var(--texto2); line-height: 1.6; }
+  .tf-clientes { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .6rem; }
+  .tf-cliente {
+    font-size: .7rem; padding: 3px 10px; border-radius: 20px;
+    background: rgba(14,165,233,.15); color: var(--azul);
+    border: 1px solid rgba(14,165,233,.25);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg); border-top: 1px solid var(--borda);
+    padding: 2rem; text-align: center;
+  }
+  footer p { font-size: .75rem; color: var(--texto2); }
+  .footer-logo {
+    font-size: 1.1rem; font-weight: 800; margin-bottom: .4rem;
+    background: linear-gradient(135deg, var(--azul), var(--roxo));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── DIVISOR ─── */
+  .divider {
+    height: 1px; background: linear-gradient(90deg, transparent, rgba(14,165,233,.3), transparent);
+    margin: 0 auto;
+  }
+
+  /* ─── RESPONSIVO BÁSICO ─── */
+  @media (max-width: 900px) {
+    .fases-grid { grid-template-columns: repeat(3,1fr); }
+    .principios-grid, .padroes-grid { grid-template-columns: 1fr 1fr; }
+    .agents-grid { grid-template-columns: repeat(2,1fr); }
+    .dupla-grid { grid-template-columns: 1fr; }
+    .hierarquia-grid { justify-content: flex-start; }
+    .roadmap-line { flex-direction: column; }
+    .roadmap-line::before { display: none; }
+    .roadmap-item { flex-direction: row; align-items: flex-start; text-align: left; gap: 1rem; padding: .5rem 0; }
+    .roadmap-dot { flex-shrink: 0; }
+  }
+
+  /* ─── GLOW CARD ─── */
+  .glow-azul { box-shadow: 0 0 30px rgba(14,165,233,.08); }
+  .glow-roxo { box-shadow: 0 0 30px rgba(139,92,246,.08); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🔷 SpinFlow</div>
+  <div class="nav-links">
+    <a href="#hierarquia">Hierarquia</a>
+    <a href="#fases">5 Fases</a>
+    <a href="#principios">Princípios</a>
+    <a href="#padroes">Padrões de Fluxo</a>
+    <a href="#aplicacao">Aplicação</a>
+    <a href="#agents">Agents</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container hero-content">
+    <div class="hero-badge"><span></span> Metodologia Operacional v1.0</div>
+    <h1><span class="hero-gradient">SpinFlow</span></h1>
+    <p class="hero-sub">
+      Um sistema de gestão empresarial baseado em processos contínuos — não projetos — com estrutura hierárquica universal e fluxos inteligentes adaptados à realidade operacional.
+    </p>
+    <div class="hero-cta">
+      <a href="#hierarquia" class="btn btn-primary">→ Explorar Metodologia</a>
+      <a href="#aplicacao" class="btn btn-ghost">Ver Aplicação</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">7</div><div class="stat-l">Níveis Hierárquicos</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Fases Canônicas</div></div>
+      <div class="stat"><div class="stat-n">9</div><div class="stat-l">Princípios Fundamentais</div></div>
+      <div class="stat"><div class="stat-n">9</div><div class="stat-l">Padrões de Fluxo</div></div>
+      <div class="stat"><div class="stat-n">7</div><div class="stat-l">Spin Agents</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HIERARQUIA -->
+<section id="hierarquia">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Estrutura</div>
+      <h2 class="section-title">Hierarquia em 7 Níveis</h2>
+      <p class="section-sub">Cada nível tem uma função precisa. Do estratégico ao executável, a estrutura é universal — aplica-se a qualquer setor, qualquer empresa.</p>
+    </div>
+    <div class="hierarquia-grid fade-in">
+      <div class="nivel-card">
+        <div class="nivel-icon">🏢</div>
+        <div class="nivel-num">N1</div>
+        <div class="nivel-nome">Empresa</div>
+        <div class="nivel-desc">Raiz que agrupa todos os Setores</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">🏛️</div>
+        <div class="nivel-num">N2</div>
+        <div class="nivel-nome">Setor</div>
+        <div class="nivel-desc">Agrupamento operacional (Comercial, Operacional, RH…)</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">⚙️</div>
+        <div class="nivel-num">N3</div>
+        <div class="nivel-nome">Processo</div>
+        <div class="nivel-desc">Operação contínua que se repete — não projeto</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">🔄</div>
+        <div class="nivel-num">N4</div>
+        <div class="nivel-nome">Fase</div>
+        <div class="nivel-desc">Status macro do processo (sempre 5, sempre em ordem)</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">🚩</div>
+        <div class="nivel-num">N5</div>
+        <div class="nivel-nome">Etapa</div>
+        <div class="nivel-desc">Marco — conclusão avança a fase do processo</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">📋</div>
+        <div class="nivel-num">N6</div>
+        <div class="nivel-nome">Atividade</div>
+        <div class="nivel-desc">SOP — fecha por critério, não por checklist</div>
+      </div>
+      <div class="nivel-card">
+        <div class="nivel-icon">✅</div>
+        <div class="nivel-num">N7</div>
+        <div class="nivel-nome">Tarefa</div>
+        <div class="nivel-desc">Instância concreta de execução — pode repetir em loop</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 5 FASES -->
+<section id="fases">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Canônico · Imutável</div>
+      <h2 class="section-title">As 5 Fases de Todo Processo</h2>
+      <p class="section-sub">Todo processo da empresa — de qualquer setor — atravessa exatamente estas 5 fases, nessa ordem. É a espinha dorsal que dá previsibilidade gerencial.</p>
+    </div>
+    <div class="fases-grid fade-in">
+      <div class="fase-card">
+        <div class="fase-icon">🔬</div>
+        <div class="fase-num">FASE 01</div>
+        <div class="fase-nome">Preparação</div>
+        <div class="fase-desc">Levantamento, diagnóstico e estruturação de tudo o que é necessário antes de iniciar o processo com o cliente ou operação.</div>
+        <div class="fase-tags">
+          <span class="fase-tag">Diagnóstico</span>
+          <span class="fase-tag">Planejamento</span>
+          <span class="fase-tag">Pré-requisitos</span>
+        </div>
+      </div>
+      <div class="fase-card">
+        <div class="fase-icon">🚀</div>
+        <div class="fase-num">FASE 02</div>
+        <div class="fase-nome">Iniciação</div>
+        <div class="fase-desc">Arranque oficial da operação — formalização, onboarding, alinhamentos iniciais e estruturação do ambiente de trabalho.</div>
+        <div class="fase-tags">
+          <span class="fase-tag">Onboarding</span>
+          <span class="fase-tag">Formalização</span>
+          <span class="fase-tag">Setup</span>
+        </div>
+      </div>
+      <div class="fase-card">
+        <div class="fase-icon">⚡</div>
+        <div class="fase-num">FASE 03</div>
+        <div class="fase-nome">Execução</div>
+        <div class="fase-desc">Coração do processo — onde o trabalho real acontece. Atividades, loops, entregas e acompanhamento ativo da operação.</div>
+        <div class="fase-tags">
+          <span class="fase-tag">Entrega</span>
+          <span class="fase-tag">Loop</span>
+          <span class="fase-tag">Acompanhamento</span>
+        </div>
+      </div>
+      <div class="fase-card">
+        <div class="fase-icon">🎯</div>
+        <div class="fase-num">FASE 04</div>
+        <div class="fase-nome">Finalização</div>
+        <div class="fase-desc">Encerramento formal da instância — validação de critérios de sucesso, entrega final, documentação e handoff.</div>
+        <div class="fase-tags">
+          <span class="fase-tag">Validação</span>
+          <span class="fase-tag">Documentação</span>
+          <span class="fase-tag">Handoff</span>
+        </div>
+      </div>
+      <div class="fase-card">
+        <div class="fase-icon">🔁</div>
+        <div class="fase-num">FASE 05</div>
+        <div class="fase-nome">Manutenção</div>
+        <div class="fase-desc">Operação contínua após a entrega — monitoramento, suporte, otimização e ciclos de revisão periódicos.</div>
+        <div class="fase-tags">
+          <span class="fase-tag">Monitoramento</span>
+          <span class="fase-tag">Suporte</span>
+          <span class="fase-tag">Ciclo de Revisão</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRINCÍPIOS -->
+<section id="principios">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Fundamentos</div>
+      <h2 class="section-title">9 Princípios Fundamentais</h2>
+      <p class="section-sub">Toda decisão de modelagem e toda regra da metodologia deriva de um destes princípios. Eles são a constituição do SpinFlow.</p>
+    </div>
+    <div class="principios-grid fade-in">
+      <div class="principio-card" data-num="01">
+        <div class="p-num-badge">P01</div>
+        <div class="p-icon">🔄</div>
+        <div class="p-titulo">Processo &gt; Projeto</div>
+        <div class="p-desc">Fase → Etapa → Atividade → Tarefa modelam operações contínuas, não entregas finitas. Projetos têm fim; processos evoluem sem parar.</div>
+      </div>
+      <div class="principio-card" data-num="02">
+        <div class="p-num-badge">P02</div>
+        <div class="p-icon">↕️</div>
+        <div class="p-titulo">Macro Linear, Micro Fluido</div>
+        <div class="p-desc">As 5 Fases são um roadmap linear e previsível. Dentro de cada fase, atividades e tarefas seguem lógica fluida de SOP.</div>
+      </div>
+      <div class="principio-card" data-num="03">
+        <div class="p-num-badge">P03</div>
+        <div class="p-icon">🚩</div>
+        <div class="p-titulo">Marco como Status</div>
+        <div class="p-desc">Etapa concluída transiciona o processo. Status não é declarado por mão livre — é derivado do fechamento real das etapas.</div>
+      </div>
+      <div class="principio-card" data-num="04">
+        <div class="p-num-badge">P04</div>
+        <div class="p-icon">📋</div>
+        <div class="p-titulo">Atividade é SOP, Tarefa é Execução</div>
+        <div class="p-desc">Atividade fecha por critério de sucesso — não por checklist. Tarefa é a instância concreta, volátil, que pode ser repetida.</div>
+      </div>
+      <div class="principio-card" data-num="05">
+        <div class="p-num-badge">P05</div>
+        <div class="p-icon">📜</div>
+        <div class="p-titulo">Histórico por Loop</div>
+        <div class="p-desc">Tentativas falhas viram log — nunca são apagadas nem reabertas. Nova tarefa é engatilhada. O histórico operacional é sagrado.</div>
+      </div>
+      <div class="principio-card" data-num="06">
+        <div class="p-num-badge">P06</div>
+        <div class="p-icon">⚡</div>
+        <div class="p-titulo">Previsibilidade Engatilhada</div>
+        <div class="p-desc">Tarefas em loop não são pré-criadas. Cada nova tarefa nasce sob necessidade — backlog limpo, dado utilizável.</div>
+      </div>
+      <div class="principio-card" data-num="07">
+        <div class="p-num-badge">P07</div>
+        <div class="p-icon">🌐</div>
+        <div class="p-titulo">Universalidade</div>
+        <div class="p-desc">O mesmo modelo serve a todo setor — Comercial, Operacional, Marketing, RH, Financeiro. Uma linguagem comum para toda a empresa.</div>
+      </div>
+      <div class="principio-card" data-num="08">
+        <div class="p-num-badge">P08</div>
+        <div class="p-icon">🏛️</div>
+        <div class="p-titulo">Composição Setorial</div>
+        <div class="p-desc">Processos vivem dentro de Setores. Cada Setor pode evoluir independentemente sem impactar os demais.</div>
+      </div>
+      <div class="principio-card" data-num="09">
+        <div class="p-num-badge">P09</div>
+        <div class="p-icon">✅</div>
+        <div class="p-titulo">Sucesso vs. Não-Sucesso</div>
+        <div class="p-desc">Toda tarefa declara "Concluída-com-sucesso" ou "Concluída-sem-sucesso". Esse desfecho binário governa todos os loops e engatilhamentos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PADRÕES DE FLUXO -->
+<section id="padroes">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Lógica Operacional</div>
+      <h2 class="section-title">9 Padrões de Fluxo</h2>
+      <p class="section-sub">Ferramentas aplicáveis para modelar qualquer processo. Combinados em receitas, cobrem a realidade operacional de qualquer empresa.</p>
+    </div>
+    <div class="padroes-grid fade-in">
+      <div class="padrao-card">
+        <div class="padrao-icon">➡️</div>
+        <div class="padrao-nome">P1 — Sequencial</div>
+        <div class="padrao-aplica">Etapas · Atividades · Tarefas</div>
+        <div class="padrao-desc">B só inicia após A concluir com sucesso. Usar quando há dependência real de output — não apenas por hábito.</div>
+        <div class="padrao-diagrama">[A] ──── concluída ────▶ [B]</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">⇉</div>
+        <div class="padrao-nome">P2 — Paralelo</div>
+        <div class="padrao-aplica">Etapas · Atividades</div>
+        <div class="padrao-desc">A e B progridem independentemente. Menor lead time, maior coordenação. Usar quando não há dependência de insumos.</div>
+        <div class="padrao-diagrama">       ┌──▶ [A] ──┐
+[start]┤         ├──▶ next
+       └──▶ [B] ──┘</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">🚦</div>
+        <div class="padrao-nome">P3 — Marco-libera-fase</div>
+        <div class="padrao-aplica">Transição Fase → Fase</div>
+        <div class="padrao-desc">A Fase N só avança quando todas as Etapas estão concluídas. Mecanismo canônico — sempre ativo. Sem teatro de processo.</div>
+        <div class="padrao-diagrama">[Fase N]
+  ├── Etapa N.1  ✓
+  └── Etapa N.2  ✓
+         ▼ avança para
+    [Fase N+1]</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">🔁</div>
+        <div class="padrao-nome">P4 — Loop de Atividade</div>
+        <div class="padrao-aplica">Tarefas dentro de Atividade</div>
+        <div class="padrao-desc">Cada tentativa vira uma nova Tarefa. A anterior não é reaberta. Histórico íntegro, estado corrente claro.</div>
+        <div class="padrao-diagrama">Tarefa #1 → sem-sucesso
+Tarefa #2 → sem-sucesso
+Tarefa #3 → ✓ sucesso</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">⚡</div>
+        <div class="padrao-nome">P5 — Engatilhamento Condicional</div>
+        <div class="padrao-aplica">Tarefas dentro de Atividade</div>
+        <div class="padrao-desc">Tarefa N+1 nasce somente se N fecha sem sucesso. Se N tem sucesso, a atividade fecha. Backlog limpo.</div>
+        <div class="padrao-diagrama">Tarefa N → sucesso?
+  ├─ Sim → Atividade fecha ✓
+  └─ Não → Engatilha N+1</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">⏸️</div>
+        <div class="padrao-nome">P6 — Bloqueada por Externo</div>
+        <div class="padrao-aplica">Atividade</div>
+        <div class="padrao-desc">Quando o bloqueio é externo ao processo, a Atividade entra em estado Bloqueada com motivo e data registrados.</div>
+        <div class="padrao-diagrama">status: Bloqueada
+motivo: "aguard. assinatura"
+desde: 2026-05-07
+monitoramento: em loop</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">⬇️</div>
+        <div class="padrao-nome">P7 — Insucesso e Cascata</div>
+        <div class="padrao-aplica">Atividade → Etapa</div>
+        <div class="padrao-desc">Atividade sem-sucesso pode: (1) não impedir a Etapa, (2) engatilhar Atividade alternativa, ou (3) fechar a Etapa como insucesso.</div>
+        <div class="padrao-diagrama">Atividade sem-sucesso
+  ├─ Etapa ok? → Avança
+  ├─ Atividade alt? → Loop
+  └─ Terminal → Aborta/Regride</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">🔀</div>
+        <div class="padrao-nome">P8 — Paralela com Convergência</div>
+        <div class="padrao-aplica">Etapas dentro de Fase</div>
+        <div class="padrao-desc">Múltiplas etapas paralelas convergem em uma etapa de decisão que depende de todas. Usado em análises multi-dimensionais.</div>
+        <div class="padrao-diagrama">[Etapa A] ──┐
+[Etapa B] ──┼──▶ [Decisão]
+[Etapa D] ──┘</div>
+      </div>
+      <div class="padrao-card">
+        <div class="padrao-icon">🔖</div>
+        <div class="padrao-nome">P9 — Cancelada vs. Sem-Sucesso</div>
+        <div class="padrao-aplica">Tarefa</div>
+        <div class="padrao-desc">Sem-sucesso → tentaria de novo? Sim. Cancelada → não faz mais sentido. A distinção governa se o loop continua ou não.</div>
+        <div class="padrao-diagrama">Sem-sucesso → engatilha N+1
+Cancelada   → loop para aqui
+Regra: "tentaria de novo?"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DUPLA NATUREZA -->
+<section id="aplicacao">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Estratégia</div>
+      <h2 class="section-title">Dupla Natureza do SpinFlow</h2>
+      <p class="section-sub">O SpinFlow não é só ferramenta interna — é produto replicável. Cada otimização no uso próprio vira maturidade de produto.</p>
+    </div>
+    <div class="dupla-grid fade-in">
+      <div class="dupla-card uso-proprio glow-azul">
+        <div class="dupla-tag">🏠 Uso Próprio</div>
+        <div class="dupla-titulo">Sistema de Gestão do Rodrigo</div>
+        <div class="dupla-desc">O SpinFlow opera a própria empresa do Rodrigo no ClickUp — desde o processo comercial até a operação de entrega. É laboratório vivo que valida cada decisão antes de virar produto.</div>
+        <ul class="dupla-list">
+          <li>Processo Comercial mapeado e operando</li>
+          <li>Processo Operacional (TecnoFácil) completo</li>
+          <li>Sistema Multi-Agent em construção</li>
+          <li>OKRs e KPIs como próxima camada</li>
+          <li>Roadmap evolutivo por Levas</li>
+        </ul>
+      </div>
+      <div class="dupla-card uso-cliente glow-roxo">
+        <div class="dupla-tag">🌐 Produto Replicável</div>
+        <div class="dupla-titulo">SpinFlow como Serviço</div>
+        <div class="dupla-desc">A mesma metodologia é entregue a clientes como um sistema de transformação digital. O modelo é universal e se adapta ao vocabulário de cada empresa sem perder a estrutura.</div>
+        <ul class="dupla-list">
+          <li>Instância TecnoFácil como referência</li>
+          <li>Modelo de Referência por setor exportável</li>
+          <li>Onboarding padronizado via Fases</li>
+          <li>Manutenção contínua como entrega recorrente</li>
+          <li>Caminho para SaaS no horizonte</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TecnoFácil band -->
+    <div class="tecnofacil-band fade-in">
+      <div class="tf-icon">⚡</div>
+      <div>
+        <div class="tf-titulo">TecnoFácil — Aplicação de Referência</div>
+        <div class="tf-desc">Consultoria de transformação digital para pequenos negócios. Primeira instância real do SpinFlow em um cliente externo. Serve como template para futuras replicações da metodologia.</div>
+        <div class="tf-clientes">
+          <span class="tf-cliente">🔮 Prata Cigana</span>
+          <span class="tf-cliente">🏄 Camping Surf Tamandaré</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SPIN AGENTS -->
+<section id="agents">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Sistema Multi-Agent</div>
+      <h2 class="section-title">Spin Agents</h2>
+      <p class="section-sub">Agents especializados que operam cada domínio do SpinFlow — de estratégia a manutenção. Sistema em construção na Leva atual.</p>
+    </div>
+    <div class="agents-grid fade-in">
+      <div class="agent-card">
+        <div class="agent-avatar">🧱</div>
+        <div class="agent-nome">Neo</div>
+        <div class="agent-dom">Arquitetura da metodologia e validação de estrutura</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">🦉</div>
+        <div class="agent-nome">Atena</div>
+        <div class="agent-dom">Estratégia, OKRs e análise cross-setor</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">⚔️</div>
+        <div class="agent-nome">Odin</div>
+        <div class="agent-dom">Processo Comercial e pipeline de vendas</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">🪁</div>
+        <div class="agent-nome">Hermes</div>
+        <div class="agent-dom">Conteúdo, copy e comunicação</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">🌿</div>
+        <div class="agent-nome">Eva</div>
+        <div class="agent-dom">Agenda, reuniões e follow-ups</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">🔧</div>
+        <div class="agent-nome">Operador</div>
+        <div class="agent-dom">Manutenção do sistema multi-agent</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar">🧠</div>
+        <div class="agent-nome">Jarvis</div>
+        <div class="agent-dom">Memória, wiki e organização de conhecimento</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Evolução</div>
+      <h2 class="section-title">Roadmap de Levas</h2>
+      <p class="section-sub">A metodologia evolui em levas incrementais — cada uma adiciona uma camada sem quebrar o que já funciona.</p>
+    </div>
+    <div class="roadmap-line fade-in">
+      <div class="roadmap-item done">
+        <div class="roadmap-dot">✅</div>
+        <div>
+          <div class="roadmap-label">Leva 1 — Fundação</div>
+          <div class="roadmap-desc">Metodologia canônica completa. Processo Comercial + Operacional TecnoFácil. 9 Princípios + 9 Padrões documentados.</div>
+        </div>
+      </div>
+      <div class="roadmap-item active">
+        <div class="roadmap-dot">🔵</div>
+        <div>
+          <div class="roadmap-label">Leva 2 — Em Construção</div>
+          <div class="roadmap-desc">Processo Operacional genérico. Mapeamento ClickUp. Sistema Multi-Agent fase inicial. Camada estratégica (OKRs/KPIs).</div>
+        </div>
+      </div>
+      <div class="roadmap-item next">
+        <div class="roadmap-dot">⬜</div>
+        <div>
+          <div class="roadmap-label">Leva 3 — Spin Agents</div>
+          <div class="roadmap-desc">Todos os 7 agents ativos e integrados. Dashboards automatizados. Ciclo de revisão periódica funcionando.</div>
+        </div>
+      </div>
+      <div class="roadmap-item next">
+        <div class="roadmap-dot">⬜</div>
+        <div>
+          <div class="roadmap-label">Leva 4 — SaaS</div>
+          <div class="roadmap-desc">Produto independente de ClickUp. Onboarding escalável. SpinFlow como plataforma white-label ou standalone.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🔷 SpinFlow</div>
+  <p>Metodologia de Gestão Operacional · v1.0 · Maio 2026</p>
+  <p style="margin-top:.3rem; font-size:.68rem;">Rodrigo Tabosa · Workspace 333</p>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Nav active link highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#'+current ? 'var(--azul)' : '';
+    });
+  });
+</script>
+</body>
+</html>

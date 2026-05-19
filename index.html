@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rodrigo Tabosa — Projetos</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161920;
+      --border: #2a2f42;
+      --text: #e8eaf0;
+      --muted: #8891a8;
+      --spinflow: #4f7df9;
+      --spinflow-glow: rgba(79, 125, 249, 0.18);
+      --tecno: #22c87a;
+      --tecno-glow: rgba(34, 200, 122, 0.16);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    header {
+      padding: 64px 40px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
+    header p  { margin-top: 10px; color: var(--muted); font-size: 1rem; max-width: 500px; line-height: 1.6; }
+
+    .section {
+      max-width: 960px;
+      margin: 0 auto 56px;
+      padding: 0 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .section-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .section-dot.spinflow { background: var(--spinflow); box-shadow: 0 0 10px var(--spinflow); }
+    .section-dot.tecno    { background: var(--tecno);    box-shadow: 0 0 10px var(--tecno); }
+
+    .section-header h2 {
+      font-size: 1.1rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .section-header .divider { flex: 1; height: 1px; background: var(--border); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 22px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.18s ease; border-radius: 12px;
+    }
+    .card.spinflow::before { background: var(--spinflow-glow); }
+    .card.tecno::before    { background: var(--tecno-glow); }
+
+    .card:hover { transform: translateY(-3px); border-color: transparent; }
+    .card.spinflow:hover { box-shadow: 0 4px 24px var(--spinflow-glow), 0 0 0 1px var(--spinflow); }
+    .card.tecno:hover    { box-shadow: 0 4px 24px var(--tecno-glow),    0 0 0 1px var(--tecno); }
+    .card:hover::before  { opacity: 1; }
+
+    .card-icon  { font-size: 1.5rem; line-height: 1; }
+    .card-title { font-size: 0.97rem; font-weight: 600; color: #fff; line-height: 1.35; }
+    .card-desc  { font-size: 0.83rem; color: var(--muted); line-height: 1.55; flex: 1; }
+    .card-arrow { font-size: 0.78rem; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+    .card.spinflow .card-arrow { color: var(--spinflow); }
+    .card.tecno    .card-arrow { color: var(--tecno); }
+
+    footer {
+      max-width: 960px; margin: 0 auto;
+      padding: 32px 40px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      header, .section, footer { padding-left: 20px; padding-right: 20px; }
+      header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Rodrigo Tabosa</h1>
+    <p>Projetos desenvolvidos no Workspace 333 com Claude Code. Criações em HTML geradas como visualizações e protótipos de sistemas.</p>
+  </header>
+
+  <!-- SpinFlow -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-dot spinflow"></span>
+      <h2>SpinFlow</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+
+      <a class="card spinflow" target="_blank" href="spinflow/hub.html">
+        <div class="card-icon">🔷</div>
+        <div class="card-title">SpinFlow Hub</div>
+        <div class="card-desc">Página central de navegação do sistema SpinFlow com acesso a todos os módulos.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card spinflow" target="_blank" href="spinflow/v1.1.html">
+        <div class="card-icon">📐</div>
+        <div class="card-title">SpinFlow v1.1</div>
+        <div class="card-desc">Versão 1.1 completa do sistema, com diagnóstico, estratégia, mapa tech e termos.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card spinflow" target="_blank" href="spinflow/estrategia.html">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">Camada Estratégica</div>
+        <div class="card-desc">Proposta de estrutura estratégica do SpinFlow: posicionamento, visão e diferenciais.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card spinflow" target="_blank" href="spinflow/mapa-tech.html">
+        <div class="card-icon">🗺️</div>
+        <div class="card-title">Mapa Tech</div>
+        <div class="card-desc">Arquitetura tecnológica do SpinFlow: ferramentas, integrações e fluxos de dados.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card spinflow" target="_blank" href="spinflow/conceito-estrategico.html">
+        <div class="card-icon">💡</div>
+        <div class="card-title">Conceito Estratégico</div>
+        <div class="card-desc">Documento de conceito e posicionamento estratégico gerado nas otimizações do SpinFlow.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card spinflow" target="_blank" href="spinflow/status.html">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Status do Projeto</div>
+        <div class="card-desc">Painel de acompanhamento do progresso do SpinFlow no Claude Code.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- TecnoFácil -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-dot tecno"></span>
+      <h2>TecnoFácil</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+
+      <a class="card tecno" target="_blank" href="tecnofacil/landing.html">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Landing Page — Serviços</div>
+        <div class="card-desc">Página de apresentação de serviços da TecnoFácil, com proposta de valor e CTA.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/briefing.html">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Formulário de Briefing</div>
+        <div class="card-desc">Levantamento de informações de novos clientes para início de projetos.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/nps.html">
+        <div class="card-icon">⭐</div>
+        <div class="card-title">Formulário NPS</div>
+        <div class="card-desc">Pesquisa de satisfação e Net Promoter Score para clientes da TecnoFácil.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    Workspace 333 &middot; Rodrigo Tabosa &middot; Criado com Claude Code
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpinFlow v1.1 - Mapa Tech</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/mapa-tech.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">SF</div><div><div class="brand-title">SpinFlow</div><div class="brand-subtitle">Mapa Tech v1.1</div></div></div>
+      <nav class="nav-group">
+        <div class="nav-label">Navegacao</div>
+        <a class="nav-link" href="index.html"><span class="dot" style="color:var(--purple)"></span> Inicio</a>
+        <a class="nav-link active" href="mapa-tech.html"><span class="dot" style="color:var(--innovation)"></span> Mapa Tech</a>
+        <a class="nav-link" href="estrategia.html"><span class="dot" style="color:var(--amber)"></span> Camada Estrategica</a>
+        <a class="nav-link" href="diagnostico.html"><span class="dot" style="color:var(--opt)"></span> Diagnostico</a>
+        <a class="nav-link" href="termos-cargos.html"><span class="dot" style="color:var(--people)"></span> Termos e Cargos</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb">SpinFlow / <strong>Mapa Tech</strong></div>
+        <div class="chip-row"><span class="chip">treemap clicavel</span><span class="chip">v1.1</span></div>
+      </header>
+      <div class="content">
+        <section class="hero-main" style="margin-bottom:18px">
+          <div class="eyebrow">Espaco empresarial ClickUp</div>
+          <h1>Mapa global das listas, entidades, campos, fluxos e relacionamentos.</h1>
+          <p class="lead">Clique em uma pasta para expandir. Clique em uma lista para ver o modelo tecnico recomendado: tipo de entidade, custom fields, status, relacionamentos e automacoes.</p>
+        </section>
+
+        <div class="map-toolbar">
+          <input id="search" class="search" type="search" placeholder="Buscar por lista, campo, entidade ou relacionamento">
+          <button id="expandAll" class="btn" type="button">Expandir tudo</button>
+          <button id="collapseAll" class="btn" type="button">Recolher tudo</button>
+        </div>
+
+        <section class="map-layout">
+          <div class="treemap" id="treemap" aria-label="Mapa de pastas e listas"></div>
+          <aside class="detail-panel" id="detail">
+            <div class="detail-title">
+              <div>
+                <div class="eyebrow">Selecione uma lista</div>
+                <h2>Detalhamento tecnico</h2>
+                <p class="lead">O painel mostrara entidade, status, campos, relacoes e automacoes.</p>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

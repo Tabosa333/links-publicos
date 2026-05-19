@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Formulário de briefing para novos clientes TecnoFácil">
+    <title>Briefing de Cliente - TecnoFácil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1E40AF;
+            --primary-light: #3B82F6;
+            --accent: #10B981;
+            --accent-light: #34D399;
+            --dark: #1E293B;
+            --dark-light: #334155;
+            --light: #F8FAFC;
+            --gray: #E2E8F0;
+            --text: #0F172A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--light) 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 1.5rem 2rem;
+            background: var(--light);
+            border-bottom: 2px solid var(--gray);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--dark-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Step Indicators */
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gray);
+            color: var(--dark-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-number {
+            background: var(--accent);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--dark-light);
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Form Content */
+        .form-content {
+            padding: 2rem;
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            color: var(--dark-light);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .required {
+            color: #EF4444;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="phone"],
+        input[type="number"],
+        input[type="url"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="phone"]:focus,
+        input[type="number"]:focus,
+        input[type="url"]:focus,
+        input[type="file"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        input[type="file"] {
+            padding: 0;
+            border: 2px dashed var(--gray);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input[type="file"]:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        /* Checkbox/Radio Groups */
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-item label,
+        .radio-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Summary Screen */
+        .summary-content {
+            display: none;
+        }
+
+        .summary-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .summary-section {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-section h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--dark-light);
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-message h2 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message p {
+            color: var(--dark-light);
+        }
+
+        /* Download Button */
+        .btn-download {
+            background: var(--accent);
+            color: white;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+
+        .btn-download:hover {
+            background: var(--accent-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-content {
+                padding: 1.5rem;
+            }
+
+            .steps {
+                margin-top: 1rem;
+            }
+
+            .step-label {
+                font-size: 0.75rem;
+            }
+
+            .step-number {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Briefing de Cliente</h1>
+            <p>Vamos conhecer melhor sua empresa e suas necessidades</p>
+        </div>
+
+        <!-- Progress Container -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text"><span id="currentStep">1</span> de 4 etapas</div>
+
+            <div class="steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Dados</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Presença</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Objetivos</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Brand</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="briefingForm">
+            <div class="form-content">
+                <!-- Step 1: Business Info -->
+                <div class="form-step active" data-step="1">
+                    <h2 class="step-title">Dados da Empresa</h2>
+                    <p class="step-description">Conte-nos sobre sua empresa</p>
+
+                    <div class="form-group">
+                        <label>Nome da Empresa <span class="required">*</span></label>
+                        <input type="text" name="empresa" required placeholder="Sua Empresa Ltda.">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Segmento/Ramo <span class="required">*</span></label>
+                            <select name="segmento" required>
+                                <option value="">Selecione uma opção...</option>
+                                <option value="varejo">Varejo</option>
+                                <option value="servicos">Serviços</option>
+                                <option value="tecnologia">Tecnologia</option>
+                                <option value="saude">Saúde</option>
+                                <option value="educacao">Educação</option>
+                                <option value="financeiro">Financeiro</option>
+                                <option value="imobiliario">Imobiliário</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Localização <span class="required">*</span></label>
+                            <input type="text" name="localizacao" required placeholder="Cidade, Estado">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Há quanto tempo atua? <span class="required">*</span></label>
+                            <input type="number" name="anos" required placeholder="Ex: 5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Colaboradores <span class="required">*</span></label>
+                            <select name="colaboradores" required>
+                                <option value="">Selecione...</option>
+                                <option value="1-5">1-5 pessoas</option>
+                                <option value="6-10">6-10 pessoas</option>
+                                <option value="11-20">11-20 pessoas</option>
+                                <option value="21-50">21-50 pessoas</option>
+                                <option value="50+">Mais de 50</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contato Principal <span class="required">*</span></label>
+                        <input type="text" name="contato_nome" required placeholder="Seu nome">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" name="email" required placeholder="seu@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone <span class="required">*</span></label>
+                            <input type="phone" name="telefone" required placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Digital Presence -->
+                <div class="form-step" data-step="2">
+                    <h2 class="step-title">Presença Digital</h2>
+                    <p class="step-description">Como você atualmente se apresenta na web?</p>
+
+                    <div class="form-group">
+                        <label>Você tem um site? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="site_sim" name="tem_site" value="sim" required>
+                                <label for="site_sim">Sim</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="site_nao" name="tem_site" value="nao">
+                                <label for="site_nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="site_url" style="display: none;">
+                        <label>URL do Site</label>
+                        <input type="url" name="site_url" placeholder="https://exemplo.com.br">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Redes Sociais <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="insta" name="redes_sociais" value="instagram">
+                                <label for="insta">Instagram</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="face" name="redes_sociais" value="facebook">
+                                <label for="face">Facebook</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="linked" name="redes_sociais" value="linkedin">
+                                <label for="linked">LinkedIn</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="whats" name="redes_sociais" value="whatsapp">
+                                <label for="whats">WhatsApp Business</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="youtube" name="redes_sociais" value="youtube">
+                                <label for="youtube">YouTube</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="tiktok" name="redes_sociais" value="tiktok">
+                                <label for="tiktok">TikTok</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Você aparece no Google? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="google_sim" name="google_business" value="sim" required>
+                                <label for="google_sim">Sim (Google Business)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="google_nao" name="google_business" value="nao">
+                                <label for="google_nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ferramentas Atualmente em Uso</label>
+                        <textarea name="ferramentas" placeholder="Ex: WhatsApp, Instagram, Google Ads, CRM simples..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 3: Goals & Audience -->
+                <div class="form-step" data-step="3">
+                    <h2 class="step-title">Objetivos e Público</h2>
+                    <p class="step-description">Qual é o seu foco principal?</p>
+
+                    <div class="form-group">
+                        <label>Objetivo Principal <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="obj_vendas" name="objetivo" value="aumentar_vendas">
+                                <label for="obj_vendas">Aumentar Vendas</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="obj_visibilidade" name="objetivo" value="aumentar_visibilidade">
+                                <label for="obj_visibilidade">Aumentar Visibilidade</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="obj_clientes" name="objetivo" value="capturar_leads">
+                                <label for="obj_clientes">Capturar Leads</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="obj_relacionamento" name="objetivo" value="relacionamento">
+                                <label for="obj_relacionamento">Melhorar Relacionamento com Clientes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="obj_reputacao" name="objetivo" value="reputacao">
+                                <label for="obj_reputacao">Construir Reputação Online</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Público-Alvo <span class="required">*</span></label>
+                        <textarea name="publico_alvo" required placeholder="Descreva seu cliente ideal: idade, profissão, interesses, localização..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Principais Competidores</label>
+                        <textarea name="competidores" placeholder="Cite 2-3 competidores que você admira ou quer superar..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Faixa de Orçamento <span class="required">*</span></label>
+                        <select name="orcamento" required>
+                            <option value="">Selecione uma opção...</option>
+                            <option value="ate_2k">Até R$ 2.000</option>
+                            <option value="2k_5k">R$ 2.000 - R$ 5.000</option>
+                            <option value="5k_10k">R$ 5.000 - R$ 10.000</option>
+                            <option value="10k_20k">R$ 10.000 - R$ 20.000</option>
+                            <option value="acima_20k">Acima de R$ 20.000</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 4: Brand & Preferences -->
+                <div class="form-step" data-step="4">
+                    <h2 class="step-title">Brand e Preferências</h2>
+                    <p class="step-description">Ajude-nos a entender sua identidade visual</p>
+
+                    <div class="form-group">
+                        <label>Cores Principais <span class="required">*</span></label>
+                        <input type="text" name="cores" required placeholder="Ex: Azul, branco, verde">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estilo de Design <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="style_moderno" name="estilo" value="moderno" required>
+                                <label for="style_moderno">Moderno e Minimalista</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="style_corporativo" name="estilo" value="corporativo">
+                                <label for="style_corporativo">Corporativo e Profissional</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="style_criativo" name="estilo" value="criativo">
+                                <label for="style_criativo">Criativo e Colorido</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="style_clean" name="estilo" value="clean">
+                                <label for="style_clean">Clean e Simples</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Você possui Logo? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="logo_sim" name="tem_logo" value="sim" required>
+                                <label for="logo_sim">Sim</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="logo_nao" name="tem_logo" value="nao">
+                                <label for="logo_nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="logo_upload" style="display: none;">
+                        <label>Envie sua Logo</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" name="logo_arquivo" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observações Adicionais</label>
+                        <textarea name="observacoes" placeholder="Há algo que você gostaria de adicionar? Desafios, expectativas, preferências especiais..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Summary & Download -->
+                <div class="summary-content" data-step="5">
+                    <div class="success-message">
+                        <h2>✓ Briefing Preenchido com Sucesso!</h2>
+                        <p>Aqui está um resumo de todas as suas informações</p>
+                    </div>
+
+                    <div id="summaryDisplay"></div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button type="button" class="btn-primary btn-download" onclick="downloadSummary()">
+                            ⬇ Baixar Resumo em PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" id="prevBtn" style="display: none;" onclick="changeStep(-1)">← Anterior</button>
+                    <button type="button" class="btn-primary" id="nextBtn" onclick="changeStep(1)">Próximo →</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        const form = document.getElementById('briefingForm');
+
+        // Radio button toggle for site URL
+        document.querySelectorAll('input[name="tem_site"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const siteUrlDiv = document.getElementById('site_url');
+                siteUrlDiv.style.display = this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        // Radio button toggle for logo upload
+        document.querySelectorAll('input[name="tem_logo"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const logoUploadDiv = document.getElementById('logo_upload');
+                logoUploadDiv.style.display = this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        function changeStep(direction) {
+            // Validate current step before moving
+            if (direction > 0 && !validateStep(currentStep)) {
+                alert('Por favor, preencha todos os campos obrigatórios desta etapa.');
+                return;
+            }
+
+            currentStep += direction;
+
+            if (currentStep > totalSteps) {
+                // Show summary
+                showSummary();
+                return;
+            }
+
+            if (currentStep < 1) {
+                currentStep = 1;
+                return;
+            }
+
+            updateForm();
+        }
+
+        function validateStep(step) {
+            const stepElement = document.querySelector(`[data-step="${step}"]`);
+            const requiredFields = stepElement.querySelectorAll('[required]');
+
+            for (let field of requiredFields) {
+                if (field.type === 'radio') {
+                    const radioGroup = document.getElementsByName(field.name);
+                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                    if (!isChecked) return false;
+                } else if (field.type === 'checkbox') {
+                    const checkboxGroup = document.getElementsByName(field.name);
+                    const isChecked = Array.from(checkboxGroup).some(checkbox => checkbox.checked);
+                    if (!isChecked) return false;
+                } else if (!field.value.trim()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function updateForm() {
+            // Update form steps
+            document.querySelectorAll('.form-step').forEach((step, index) => {
+                step.classList.remove('active');
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step) => {
+                const stepNum = parseInt(step.dataset.step);
+                step.classList.remove('active', 'completed');
+
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Update progress bar
+            const progress = (currentStep / totalSteps) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.getElementById('currentStep').textContent = currentStep;
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Enviar →' : 'Próximo →';
+
+            // Scroll to top
+            document.querySelector('.form-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showSummary() {
+            const summaryHtml = generateSummary();
+            document.getElementById('summaryDisplay').innerHTML = summaryHtml;
+
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.querySelector('.summary-content').classList.add('active');
+
+            document.getElementById('prevBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            // Update progress to 100%
+            document.querySelector('.progress-fill').style.width = '100%';
+            document.getElementById('currentStep').textContent = totalSteps;
+
+            // Update all steps to completed
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+                step.classList.add('completed');
+            });
+        }
+
+        function generateSummary() {
+            const formData = new FormData(form);
+            let html = '';
+
+            // Step 1: Business Info
+            html += '<div class="summary-section">';
+            html += '<h3>1. Dados da Empresa</h3>';
+            html += `<div class="summary-item"><span class="summary-label">Empresa:</span><span class="summary-value">${formData.get('empresa') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Segmento:</span><span class="summary-value">${formData.get('segmento') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Localização:</span><span class="summary-value">${formData.get('localizacao') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Anos de Atuação:</span><span class="summary-value">${formData.get('anos') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Colaboradores:</span><span class="summary-value">${formData.get('colaboradores') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Contato:</span><span class="summary-value">${formData.get('contato_nome') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Email:</span><span class="summary-value">${formData.get('email') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Telefone:</span><span class="summary-value">${formData.get('telefone') || '-'}</span></div>`;
+            html += '</div>';
+
+            // Step 2: Digital Presence
+            html += '<div class="summary-section">';
+            html += '<h3>2. Presença Digital</h3>';
+            html += `<div class="summary-item"><span class="summary-label">Tem Site:</span><span class="summary-value">${formData.get('tem_site') || '-'}</span></div>`;
+            if (formData.get('site_url')) {
+                html += `<div class="summary-item"><span class="summary-label">URL:</span><span class="summary-value">${formData.get('site_url')}</span></div>`;
+            }
+            const redesSociais = formData.getAll('redes_sociais').join(', ') || '-';
+            html += `<div class="summary-item"><span class="summary-label">Redes Sociais:</span><span class="summary-value">${redesSociais}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Google Business:</span><span class="summary-value">${formData.get('google_business') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Ferramentas:</span><span class="summary-value">${formData.get('ferramentas') || '-'}</span></div>`;
+            html += '</div>';
+
+            // Step 3: Goals
+            html += '<div class="summary-section">';
+            html += '<h3>3. Objetivos e Público</h3>';
+            const objetivos = formData.getAll('objetivo').join(', ') || '-';
+            html += `<div class="summary-item"><span class="summary-label">Objetivos:</span><span class="summary-value">${objetivos}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Público-Alvo:</span><span class="summary-value">${formData.get('publico_alvo') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Competidores:</span><span class="summary-value">${formData.get('competidores') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Orçamento:</span><span class="summary-value">${formData.get('orcamento') || '-'}</span></div>`;
+            html += '</div>';
+
+            // Step 4: Brand
+            html += '<div class="summary-section">';
+            html += '<h3>4. Brand e Preferências</h3>';
+            html += `<div class="summary-item"><span class="summary-label">Cores:</span><span class="summary-value">${formData.get('cores') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Estilo:</span><span class="summary-value">${formData.get('estilo') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Logo:</span><span class="summary-value">${formData.get('tem_logo') || '-'}</span></div>`;
+            html += `<div class="summary-item"><span class="summary-label">Observações:</span><span class="summary-value">${formData.get('observacoes') || '-'}</span></div>`;
+            html += '</div>';
+
+            return html;
+        }
+
+        function downloadSummary() {
+            const summary = document.getElementById('summaryDisplay').innerText;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(summary));
+            element.setAttribute('download', 'briefing-cliente.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+</html>

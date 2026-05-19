@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpinFlow × Claude Code — Status da Implementação</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: #30363d;
+    --border2: #21262d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --green: #3fb950;
+    --green-dim: #238636;
+    --green-bg: #0d2a1a;
+    --blue: #58a6ff;
+    --blue-dim: #1f6feb;
+    --blue-bg: #0d1d35;
+    --purple: #bc8cff;
+    --purple-dim: #6e40c9;
+    --purple-bg: #1a0d35;
+    --orange: #f0883e;
+    --orange-bg: #2d1a09;
+    --yellow: #e3b341;
+    --yellow-bg: #2d2209;
+    --red: #f85149;
+    --red-bg: #2d0d0d;
+    --cyan: #39d353;
+    --spin-blue: #4f9ef8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #4f9ef8, #bc8cff);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: #fff;
+  }
+  .header-title { font-size: 17px; font-weight: 600; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .badge {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px;
+    background: var(--green-bg); color: var(--green);
+    border: 1px solid var(--green-dim);
+  }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; gap: 0;
+  }
+  .tab {
+    padding: 12px 18px;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--spin-blue); }
+
+  /* ── CONTENT ── */
+  main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── PROGRESS OVERVIEW ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-number { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .progress-title { font-size: 15px; font-weight: 600; }
+  .progress-pct { font-size: 13px; color: var(--muted); }
+  .progress-item { margin-bottom: 16px; }
+  .progress-item:last-child { margin-bottom: 0; }
+  .progress-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .progress-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .progress-count { font-size: 12px; color: var(--muted); }
+  .bar-track {
+    height: 6px; background: var(--bg3);
+    border-radius: 3px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    transition: border-color .2s, transform .15s;
+    cursor: default;
+  }
+  .card:hover { border-color: var(--spin-blue); transform: translateY(-2px); }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+  .card-icon { font-size: 20px; }
+  .card-status {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    border-radius: 12px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .status-done { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .status-pending { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #5c4a1a; }
+  .status-future { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+  .card-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .card-path {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--border2);
+    font-size: 10px; color: var(--muted);
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: .8px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── ARCHITECTURE DIAGRAM ── */
+  .arch-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .arch-center {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+  }
+  .arch-root {
+    background: linear-gradient(135deg, #1a3a6e, #2d1a5c);
+    border: 1px solid var(--blue-dim);
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-size: 14px; font-weight: 700;
+    color: var(--blue);
+    text-align: center;
+  }
+  .arch-arrow {
+    width: 2px; height: 24px;
+    background: var(--border);
+    margin: 0 auto;
+  }
+  .arch-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    width: 100%;
+  }
+  .arch-col {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .arch-col-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border2);
+  }
+  .arch-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 0;
+    font-size: 12px;
+  }
+  .arch-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .arch-connector {
+    display: flex; align-items: center;
+    gap: 0; margin: 0 auto;
+    width: calc(100% - 48px);
+  }
+  .connector-line {
+    flex: 1; height: 2px; background: var(--border);
+  }
+  .connector-center {
+    width: 2px; height: 20px; background: var(--border);
+    margin: 0 auto;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap { position: relative; padding-left: 24px; }
+  .roadmap::before {
+    content: '';
+    position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .roadmap-item {
+    position: relative; margin-bottom: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .roadmap-item::before {
+    content: '';
+    position: absolute; left: -20px; top: 24px;
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid;
+  }
+  .roadmap-item.done::before { background: var(--green); border-color: var(--green); }
+  .roadmap-item.next::before { background: var(--spin-blue); border-color: var(--spin-blue); box-shadow: 0 0 8px var(--spin-blue); }
+  .roadmap-item.soon::before { background: var(--bg3); border-color: var(--purple); }
+  .roadmap-item.future::before { background: var(--bg3); border-color: var(--border); }
+  .roadmap-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .roadmap-phase { font-size: 13px; font-weight: 700; }
+  .roadmap-when { font-size: 11px; color: var(--muted); }
+  .roadmap-tasks { list-style: none; }
+  .roadmap-tasks li {
+    font-size: 12px; color: var(--muted);
+    padding: 3px 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .roadmap-tasks li.done-task { color: var(--text); }
+  .check-done { color: var(--green); font-size: 13px; }
+  .check-pend { color: var(--yellow); font-size: 11px; }
+  .check-fut { color: var(--muted); font-size: 11px; }
+
+  /* ── AGENT CARDS ── */
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .agent-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    transition: border-color .2s, transform .15s;
+  }
+  .agent-card:hover { border-color: var(--purple-dim); transform: translateY(-2px); }
+  .agent-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .agent-avatar {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .agent-name { font-size: 14px; font-weight: 700; }
+  .agent-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .agent-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; }
+  .agent-tools {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .tool-tag {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 6px;
+    background: var(--bg3); color: var(--muted);
+    border: 1px solid var(--border2);
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .model-opus { color: var(--purple); border-color: var(--purple-dim); background: var(--purple-bg); }
+
+  /* ── FILE TREE ── */
+  .file-tree {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .tree-line { display: flex; align-items: center; gap: 6px; }
+  .tree-indent { color: var(--border); }
+  .tree-folder { color: var(--yellow); }
+  .tree-file-done { color: var(--green); }
+  .tree-file-pend { color: var(--orange); }
+  .tree-badge {
+    font-size: 9px; font-weight: 700;
+    padding: 1px 5px; border-radius: 4px;
+    margin-left: 4px;
+  }
+  .tbadge-new { background: var(--green-bg); color: var(--green); }
+  .tbadge-wait { background: var(--yellow-bg); color: var(--yellow); }
+  .tbadge-exist { background: var(--bg3); color: var(--muted); }
+
+  /* ── QUESTIONS ── */
+  .q-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .q-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .q-num {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 6px; letter-spacing: .5px;
+  }
+  .q-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .q-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .q-creates { font-size: 11px; }
+  .q-creates span { color: var(--muted); }
+  .q-creates code {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 4px; padding: 1px 6px;
+    font-family: 'SF Mono', Consolas, monospace;
+    color: var(--blue);
+  }
+  .q-impact {
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--orange-bg); border: 1px solid #5c3a1a;
+    border-radius: 8px; font-size: 11px; color: var(--orange);
+  }
+
+  /* ── NEXT STEPS ── */
+  .steps-col { margin-bottom: 24px; }
+  .step-card {
+    display: flex; gap: 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 12px;
+    transition: border-color .2s;
+  }
+  .step-card:hover { border-color: var(--spin-blue); }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .step-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 12px; text-transform: uppercase; letter-spacing: .4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    main { padding: 16px; }
+    .overview-grid { grid-template-columns: repeat(2, 1fr); }
+    .q-grid { grid-template-columns: 1fr; }
+    nav { overflow-x: auto; }
+    .tab { font-size: 12px; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo">SF</div>
+    <div>
+      <div class="header-title">SpinFlow × Claude Code</div>
+      <div class="header-sub">Status da Implementação · 16 mai 2026</div>
+    </div>
+  </div>
+  <div class="badge">✦ Sistema Ativo</div>
+</header>
+
+<nav>
+  <div class="tab active" onclick="showSection('overview')">Visão Geral</div>
+  <div class="tab" onclick="showSection('arquitetura')">Arquitetura</div>
+  <div class="tab" onclick="showSection('componentes')">Componentes</div>
+  <div class="tab" onclick="showSection('agents')">Agents</div>
+  <div class="tab" onclick="showSection('arquivos')">Mapa de Arquivos</div>
+  <div class="tab" onclick="showSection('pendentes')">Pendentes</div>
+  <div class="tab" onclick="showSection('roadmap')">Roadmap</div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 1: VISÃO GERAL
+═══════════════════════════════════════════════════════ -->
+<div id="section-overview" class="section active">
+
+  <div class="overview-grid">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--green)">24</div>
+      <div class="stat-label">Arquivos criados</div>
+      <div class="stat-sub">Nesta sessão</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--purple)">6</div>
+      <div class="stat-label">Spin Agents ativos</div>
+      <div class="stat-sub">Neo · Odin · Atena · Jarvis · Hermes · Eva</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--blue)">9</div>
+      <div class="stat-label">Skills + Commands</div>
+      <div class="stat-sub">5 skills · 4 commands</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--yellow)">4</div>
+      <div class="stat-label">Decisões pendentes</div>
+      <div class="stat-sub">Questionários Q1–Q4</div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <div class="progress-title">Progresso da Implementação</div>
+      <div class="progress-pct">Plano A + B executados</div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--green)">●</span> Plano A — Contexto Persistente</div>
+        <div class="progress-count">4 / 4 arquivos</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--blue)">●</span> Plano B — Skills</div>
+        <div class="progress-count">5 / 5 criadas</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--purple)">●</span> Plano B — Agents</div>
+        <div class="progress-count">6 / 7 criados</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:86%;background:var(--purple)"></div></div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--cyan)">●</span> Plano B — Commands</div>
+        <div class="progress-count">4 / 4 criados</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--cyan)"></div></div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--yellow)">●</span> Questionários de Decisão</div>
+        <div class="progress-count">0 / 4 respondidos</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--yellow)"></div></div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-row">
+        <div class="progress-name"><span style="color:var(--muted)">●</span> Plano C — Harness Multi-Agent</div>
+        <div class="progress-count">0 / planejado</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--muted)"></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">O que mudou com essa implementação</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🧠</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Contexto Automático</div>
+      <div class="card-desc">O Claude agora conhece o SpinFlow, as 5 fases, os 7 níveis e as regras de trabalho sem precisar de briefing em cada sessão.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🔒</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Proteção da Metodologia</div>
+      <div class="card-desc">A pasta <code style="font-family:monospace;font-size:11px;background:var(--bg3);padding:1px 4px;border-radius:3px">21.1</code> está protegida de edição automática. O Claude só escreve lá com confirmação explícita.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📚</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Memória Persistente</div>
+      <div class="card-desc">Decisões tomadas, estado atual do projeto e estrutura do ClickUp ficam registrados e são lidos automaticamente.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Workflows com 1 Comando</div>
+      <div class="card-desc">Criar processo, onboarding de cliente, revisão arquitetural e status do projeto — tudo executável com <code style="font-family:monospace;font-size:11px;background:var(--bg3);padding:1px 4px;border-radius:3px">/command</code>.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🤖</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Especialistas por Domínio</div>
+      <div class="card-desc">6 agents com personalidade, ferramentas e prompts calibrados para cada domínio do SpinFlow — do Comercial à Wiki.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✅</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">Validação Integrada</div>
+      <div class="card-desc">O Neo valida conformidade metodológica antes de qualquer processo ser finalizado. Nada entra em produção sem revisão.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 2: ARQUITETURA
+═══════════════════════════════════════════════════════ -->
+<div id="section-arquitetura" class="section">
+
+  <div class="arch-diagram">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px">Arquitetura do Sistema Claude Code — SpinFlow</div>
+      <div style="font-size:12px;color:var(--muted)">Como os componentes se conectam e interagem</div>
+    </div>
+
+    <div class="arch-center">
+      <div class="arch-root">📄 CLAUDE.md — Contexto Principal<br><span style="font-size:11px;font-weight:400;color:var(--muted)">Lido automaticamente · 83 linhas · Importa memória via @</span></div>
+      <div class="arch-arrow"></div>
+
+      <!-- Linha de conectores -->
+      <div style="width:100%;display:flex;align-items:flex-start;gap:12px;margin-bottom:0">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="width:2px;height:20px;background:var(--border)"></div>
+          <div class="arch-col" style="width:100%">
+            <div class="arch-col-title" style="color:var(--green)">🗃 Memory</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--green)"></div>spinflow-contexto.md</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--green)"></div>decisoes-log.md</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--border)"></div><span style="color:var(--muted)">clickup-estrutura.md ⏳</span></div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--border)"></div><span style="color:var(--muted)">spin-agents-status.md ⏳</span></div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="width:2px;height:20px;background:var(--border)"></div>
+          <div class="arch-col" style="width:100%">
+            <div class="arch-col-title" style="color:var(--blue)">⚡ Skills</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--blue)"></div>versionamento-21-3</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--blue)"></div>spinflow-metodologia</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--blue)"></div>processo-comercial</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--blue)"></div>processo-operacional</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--blue)"></div>criacao-processo</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="width:2px;height:20px;background:var(--border)"></div>
+          <div class="arch-col" style="width:100%">
+            <div class="arch-col-title" style="color:var(--purple)">🤖 Agents</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Neo · Arquiteto</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Odin · Comercial</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Atena · Estratégia</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Jarvis · Wiki</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Hermes · Conteúdo</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--purple)"></div>Eva · Agenda</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="width:2px;height:20px;background:var(--border)"></div>
+          <div class="arch-col" style="width:100%">
+            <div class="arch-col-title" style="color:var(--cyan)">🔧 Commands</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--cyan)"></div>/status-projeto</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--cyan)"></div>/novo-processo</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--cyan)"></div>/novo-cliente</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--cyan)"></div>/revisar-processo</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="width:100%;margin-top:20px">
+        <div style="height:2px;background:var(--border);margin-bottom:20px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="arch-col">
+            <div class="arch-col-title" style="color:var(--orange)">🌌 ClickUp MCP</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--orange)"></div>Workspace 30993347</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--orange)"></div>Espaço SpinFLow 🌌</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--orange)"></div>Leitura e escrita via MCP</div>
+          </div>
+          <div class="arch-col">
+            <div class="arch-col-title" style="color:var(--muted)">🏗 Plano C (futuro)</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--muted)"></div>Neo → Planner</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--muted)"></div>Generator → Executor</div>
+            <div class="arch-item"><div class="arch-dot" style="background:var(--muted)"></div>Atena → Evaluator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Como os componentes interagem</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon" style="margin-bottom:8px">📖</div>
+      <div class="card-name">Sessão começa</div>
+      <div class="card-desc">Claude lê CLAUDE.md → importa memory/ → conhece o projeto sem briefing.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="margin-bottom:8px">⚡</div>
+      <div class="card-name">Skill é acionada</div>
+      <div class="card-desc">Automaticamente quando relevante, ou via "use a skill X" — carrega conhecimento especializado no contexto.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="margin-bottom:8px">🤖</div>
+      <div class="card-name">Agent é invocado</div>
+      <div class="card-desc">Roda em contexto isolado, investiga profundamente e retorna apenas o resumo — sem poluir a sessão principal.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="margin-bottom:8px">🔧</div>
+      <div class="card-name">Command executa</div>
+      <div class="card-desc">Sequência completa de passos: coleta info → aciona agents → atualiza ClickUp → registra decisão → confirma.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 3: COMPONENTES
+═══════════════════════════════════════════════════════ -->
+<div id="section-componentes" class="section">
+
+  <div class="section-title">Skills — Conhecimento especializado</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📁</div>
+        <div class="card-status status-done">Ativa</div>
+      </div>
+      <div class="card-name">versionamento-21-3</div>
+      <div class="card-desc">Regras de versionamento da pasta 21.3. Verifica versões existentes, determina o número correto, impede sobrescrever.</div>
+      <div class="card-path">.claude/skills/versionamento-21-3/SKILL.md</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📐</div>
+        <div class="card-status status-done">Ativa</div>
+      </div>
+      <div class="card-name">spinflow-metodologia</div>
+      <div class="card-desc">Hierarquia completa, 5 fases, 9 princípios, 9 padrões de fluxo e checklist de validação de processos.</div>
+      <div class="card-path">.claude/skills/spinflow-metodologia/SKILL.md</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">💼</div>
+        <div class="card-status status-done">Ativa</div>
+      </div>
+      <div class="card-name">processo-comercial</div>
+      <div class="card-desc">Mapa completo do Processo de Vendas B2B: 14 etapas, critérios de transição, pipeline ativo.</div>
+      <div class="card-path">.claude/skills/processo-comercial/SKILL.md</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🔧</div>
+        <div class="card-status status-done">Ativa</div>
+      </div>
+      <div class="card-name">processo-operacional</div>
+      <div class="card-desc">Processo TecnoFácil de prestação de serviços, pacotes e estado dos clientes ativos.</div>
+      <div class="card-path">.claude/skills/processo-operacional/SKILL.md</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🏗</div>
+        <div class="card-status status-done">Ativa</div>
+      </div>
+      <div class="card-name">criacao-processo</div>
+      <div class="card-desc">Template completo, checklist de criação e sequência de passos para construir qualquer novo Processo SpinFlow.</div>
+      <div class="card-path">.claude/skills/criacao-processo/SKILL.md</div>
+    </div>
+  </div>
+
+  <div class="section-title">Commands — Workflows acionáveis</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">/status-projeto</div>
+      <div class="card-desc">Gera relatório de status em ~1 página: operacional, em progresso, gap principal, próximas 3 prioridades, últimas decisões.</div>
+      <div class="card-path">Uso: /status-projeto</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🆕</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">/novo-processo</div>
+      <div class="card-desc">Criação guiada de novo Processo SpinFlow: coleta info → Neo valida → cria documento → registra decisão.</div>
+      <div class="card-path">Uso: /novo-processo [descrição]</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👤</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">/novo-cliente</div>
+      <div class="card-desc">Onboarding completo TecnoFácil: coleta dados → cria no ClickUp → atualiza memória → prepara kick-off com Eva e Hermes.</div>
+      <div class="card-path">Uso: /novo-cliente [nome do cliente]</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🔍</div>
+        <div class="card-status status-done">Ativo</div>
+      </div>
+      <div class="card-name">/revisar-processo</div>
+      <div class="card-desc">Revisão completa via Neo: relatório com ✅ conforme / ❌ não-conforme / 🔧 correções. Nunca edita sem aprovação.</div>
+      <div class="card-path">Uso: /revisar-processo [caminho do arquivo]</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 4: AGENTS
+═══════════════════════════════════════════════════════ -->
+<div id="section-agents" class="section">
+
+  <div class="section-title">Spin Agents — Especialistas autônomos</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;">
+    💡 <strong style="color:var(--text)">Como usar:</strong> "Use o [nome] para [tarefa]" — o agent roda em contexto isolado e retorna apenas o resumo, sem poluir sua sessão.
+  </div>
+
+  <div class="agents-grid">
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#1a3a6e,#0d2a1a)">🏛</div>
+        <div>
+          <div class="agent-name">Neo</div>
+          <div class="agent-role">Arquiteto da Metodologia</div>
+        </div>
+      </div>
+      <div class="agent-desc">Valida conformidade metodológica. Revisa processos contra as regras canônicas e produz relatório ✅ / ❌ / 🔧.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag" style="color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg)">sonnet</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#5c1a00,#2d0d00)">⚔️</div>
+        <div>
+          <div class="agent-name">Odin</div>
+          <div class="agent-role">Especialista Comercial</div>
+        </div>
+      </div>
+      <div class="agent-desc">Analisa pipeline, diagnostica gargalos, identifica leads quentes e recomenda próxima ação para cada oportunidade.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag" style="color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg)">sonnet</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#2d1a5c,#1a0d35)">🦉</div>
+        <div>
+          <div class="agent-name">Atena</div>
+          <div class="agent-role">Estrategista Cross-Setor</div>
+        </div>
+      </div>
+      <div class="agent-desc">Visão sistêmica do SpinFlow como negócio. OKRs, KPIs, gaps estratégicos, conexão estratégia ↔ operação.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag model-opus">opus</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#1a3a1a,#0d2a0d)">📚</div>
+        <div>
+          <div class="agent-name">Jarvis</div>
+          <div class="agent-role">Curador de Conhecimento</div>
+        </div>
+      </div>
+      <div class="agent-desc">Cria MOCs, normaliza frontmatter YAML, cria wikilinks entre documentos e mantém o sistema de conhecimento coerente.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag" style="color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg)">sonnet</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#3a2200,#2d1a00)">✍️</div>
+        <div>
+          <div class="agent-name">Hermes</div>
+          <div class="agent-role">Conteúdo e Comunicação</div>
+        </div>
+      </div>
+      <div class="agent-desc">Copy de prospecção, scripts de qualificação, apresentações comerciais, follow-ups e conteúdo de relacionamento com clientes.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag" style="color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg)">sonnet</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:linear-gradient(135deg,#1a3a3a,#0d2a2a)">📅</div>
+        <div>
+          <div class="agent-name">Eva</div>
+          <div class="agent-role">Calendário e Reuniões</div>
+        </div>
+      </div>
+      <div class="agent-desc">Pautas de reunião, atas com decisões e ações, follow-ups pós-reunião e lembretes de compromissos.</div>
+      <div class="agent-tools">
+        <span class="tool-tag">Read</span>
+        <span class="tool-tag">Grep</span>
+        <span class="tool-tag">Glob</span>
+        <span class="tool-tag" style="color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg)">sonnet</span>
+      </div>
+    </div>
+
+    <div class="agent-card" style="border-style:dashed;opacity:.6">
+      <div class="agent-top">
+        <div class="agent-avatar" style="background:var(--bg3)">⚙️</div>
+        <div>
+          <div class="agent-name" style="color:var(--muted)">Operador</div>
+          <div class="agent-role" style="color:var(--muted)">Manutenção do Sistema</div>
+        </div>
+      </div>
+      <div class="agent-desc">Audita o sistema multi-agent, atualiza prompts quando a metodologia evolui, detecta inconsistências. <strong style="color:var(--yellow)">Aguarda Q2 respondido.</strong></div>
+      <div class="agent-tools">
+        <span class="tool-tag" style="color:var(--yellow);border-color:#5c4a1a;background:var(--yellow-bg)">pendente</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 5: MAPA DE ARQUIVOS
+═══════════════════════════════════════════════════════ -->
+<div id="section-arquivos" class="section">
+
+  <div class="section-title">Estrutura criada no projeto</div>
+  <div class="file-tree">
+    <div class="tree-line"><span class="tree-folder">📁 21 - Spinflow/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-file-done">📄 CLAUDE.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-file-done" style="color:var(--muted)">📄 AGENTS.md</span><span class="tree-badge tbadge-exist">EXISTIA</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-folder">📁 .claude/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 settings.json</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-folder">📁 memory/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 spinflow-contexto.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 decisoes-log.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-pend">📄 clickup-estrutura.md</span><span class="tree-badge tbadge-wait">PENDENTE Q1</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-pend">📄 spin-agents-status.md</span><span class="tree-badge tbadge-wait">PENDENTE Q2</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-folder">📁 skills/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-folder">📁 versionamento-21-3/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  │  </span><span class="tree-file-done">📄 SKILL.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-folder">📁 spinflow-metodologia/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  │  </span><span class="tree-file-done">📄 SKILL.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-folder">📁 processo-comercial/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  │  </span><span class="tree-file-done">📄 SKILL.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-folder">📁 processo-operacional/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  │  </span><span class="tree-file-done">📄 SKILL.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-folder">📁 criacao-processo/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  │  </span><span class="tree-file-done">📄 SKILL.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-folder">📁 agents/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 neo.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 odin.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 atena.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 jarvis.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 hermes.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 eva.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-pend">📄 operador.md</span><span class="tree-badge tbadge-wait">PENDENTE Q2</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-folder">📁 commands/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 status-projeto.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 novo-processo.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 novo-cliente.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  │  </span><span class="tree-file-done">📄 revisar-processo.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div style="height:12px"></div>
+    <div class="tree-line"><span class="tree-folder">📁 21.01 - Gestão do Projeto/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-file-done">📄 SPINFLOW-CLAUDE-CODE-MASTER.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-file-done" style="color:var(--blue)">🌐 spinflow-claude-code-status.html</span><span class="tree-badge tbadge-new">ESTE ARQUIVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-folder">📁 Planejamentos Claude Code/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 00-ESCOLHA-SEU-PLANO.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 Plano-A-Essencial.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 Plano-B-Modular.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 Plano-C-Harness.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-done">📄 PLANO-ACAO-A-B-v2.md</span><span class="tree-badge tbadge-new">NOVO</span></div>
+    <div class="tree-line"><span class="tree-indent">│  </span><span class="tree-folder">📁 Decisões Pendentes/</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-pend">📄 Q1-clickup-estrutura-ids.md</span><span class="tree-badge tbadge-wait">RESPONDER</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-pend">📄 Q2-spin-agents-definicao.md</span><span class="tree-badge tbadge-wait">RESPONDER</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-pend">📄 Q3-estrategia-proximas-levas.md</span><span class="tree-badge tbadge-wait">RESPONDER</span></div>
+    <div class="tree-line"><span class="tree-indent">│  │  </span><span class="tree-file-pend">📄 Q4-preferencias-claude-code.md</span><span class="tree-badge tbadge-wait">RESPONDER</span></div>
+  </div>
+
+  <div style="display:flex;gap:20px;margin-top:16px;font-size:12px;color:var(--muted)">
+    <span><span style="color:var(--green)">■</span> Verde = criado nesta sessão</span>
+    <span><span style="color:var(--orange)">■</span> Laranja = pendente de resposta</span>
+    <span><span style="color:var(--muted)">■</span> Cinza = arquivo pré-existente aproveitado</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 6: PENDENTES
+═══════════════════════════════════════════════════════ -->
+<div id="section-pendentes" class="section">
+
+  <div style="background:var(--yellow-bg);border:1px solid #5c4a1a;border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:var(--yellow);">
+    ⚠️ <strong>4 questionários aguardam sua resposta.</strong> Cada um desbloqueia um componente do sistema. Abra os arquivos em <code style="font-family:monospace;background:rgba(0,0,0,.3);padding:1px 6px;border-radius:3px">21.01 - Gestão do Projeto/Decisões Pendentes/</code>, preencha e traga de volta.
+  </div>
+
+  <div class="q-grid">
+    <div class="q-card">
+      <div class="q-num">Questionário 1</div>
+      <div class="q-title">📍 Estrutura e IDs do ClickUp</div>
+      <div class="q-desc">IDs das pastas, listas e tarefas dos clientes ativos no ClickUp. Sem esses dados, o Claude busca e confirma a cada sessão, perdendo tempo e contexto.</div>
+      <div class="q-creates"><span>Cria: </span><code>memory/clickup-estrutura.md</code></div>
+      <div class="q-impact">Sem responder: Claude não navega o ClickUp com precisão</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Questionário 2</div>
+      <div class="q-title">🤖 Definição dos Spin Agents</div>
+      <div class="q-desc">Como cada agent deve se comportar, o que o Operador faz na prática, quando agents podem tomar ações diretas vs. só recomendar.</div>
+      <div class="q-creates"><span>Cria: </span><code>agents/operador.md</code><span> + ajustes nos 6 criados</span></div>
+      <div class="q-impact">Sem responder: Operador não existe; outros agents podem ter comportamento diferente do esperado</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Questionário 3</div>
+      <div class="q-title">🎯 Estratégia e Próximas Levas</div>
+      <div class="q-desc">Prioridades para as próximas 4 semanas, o que entra na Leva 2, quando iniciar o uso real dos agents, e se SpinFlow como produto está no horizonte.</div>
+      <div class="q-creates"><span>Atualiza: </span><code>memory/spinflow-contexto.md</code><span> + roadmap</span></div>
+      <div class="q-impact">Sem responder: Claude não sabe o que priorizar nas próximas sessões</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Questionário 4</div>
+      <div class="q-title">⚙️ Preferências de Uso do Claude</div>
+      <div class="q-desc">Quanto de autonomia o Claude tem, formato de respostas, gestão de contexto em sessões longas, e quais integrações conectar além do ClickUp.</div>
+      <div class="q-creates"><span>Ajusta: </span><code>CLAUDE.md</code><span> + </span><code>settings.json</code></div>
+      <div class="q-impact">Sem responder: comportamento padrão pode não refletir suas preferências</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEÇÃO 7: ROADMAP
+═══════════════════════════════════════════════════════ -->
+<div id="section-roadmap" class="section">
+
+  <div class="roadmap">
+
+    <div class="roadmap-item done">
+      <div class="roadmap-header">
+        <div class="roadmap-phase" style="color:var(--green)">✅ Pesquisa e Planejamento</div>
+        <div class="roadmap-when">Concluído · 16 mai 2026</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li class="done-task"><span class="check-done">✓</span>Estudados 19 arquivos da pesquisa Claude Code</li>
+        <li class="done-task"><span class="check-done">✓</span>Criados 3 planos (A, B, C) com trade-offs</li>
+        <li class="done-task"><span class="check-done">✓</span>Criado PLANO-ACAO-A-B-v2.md com guia detalhado</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item done">
+      <div class="roadmap-header">
+        <div class="roadmap-phase" style="color:var(--green)">✅ Plano A — Contexto Persistente</div>
+        <div class="roadmap-when">Concluído · 16 mai 2026</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li class="done-task"><span class="check-done">✓</span>CLAUDE.md criado (83 linhas, com imports)</li>
+        <li class="done-task"><span class="check-done">✓</span>settings.json com proteção de 21.1</li>
+        <li class="done-task"><span class="check-done">✓</span>memory/spinflow-contexto.md</li>
+        <li class="done-task"><span class="check-done">✓</span>memory/decisoes-log.md (6 decisões iniciais)</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item done">
+      <div class="roadmap-header">
+        <div class="roadmap-phase" style="color:var(--green)">✅ Plano B — Skills, Agents e Commands</div>
+        <div class="roadmap-when">Concluído · 16 mai 2026</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li class="done-task"><span class="check-done">✓</span>5 skills criadas e documentadas</li>
+        <li class="done-task"><span class="check-done">✓</span>6 agents criados (Neo, Odin, Atena, Jarvis, Hermes, Eva)</li>
+        <li class="done-task"><span class="check-done">✓</span>4 commands criados (/status, /novo-processo, /novo-cliente, /revisar)</li>
+        <li class="done-task"><span class="check-done">✓</span>4 questionários de decisão criados</li>
+        <li class="done-task"><span class="check-done">✓</span>Documento master + dashboard HTML</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item next">
+      <div class="roadmap-header">
+        <div class="roadmap-phase" style="color:var(--spin-blue)">→ Próximo: Responder Questionários + Testar</div>
+        <div class="roadmap-when">Esta semana</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li><span class="check-pend">○</span>Responder Q1 (IDs do ClickUp)</li>
+        <li><span class="check-pend">○</span>Responder Q2 (comportamento dos agents)</li>
+        <li><span class="check-pend">○</span>Responder Q3 (prioridades das próximas levas)</li>
+        <li><span class="check-pend">○</span>Responder Q4 (preferências pessoais do Claude)</li>
+        <li><span class="check-pend">○</span>Testar com /status-projeto em nova sessão</li>
+        <li><span class="check-pend">○</span>Criar agent Operador (após Q2)</li>
+        <li><span class="check-pend">○</span>Criar memory/clickup-estrutura.md (após Q1)</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item soon">
+      <div class="roadmap-header">
+        <div class="roadmap-phase" style="color:var(--purple)">⊡ Semana 2 — Primeiros Usos Reais</div>
+        <div class="roadmap-when">Próxima semana</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li><span class="check-fut">◌</span>Usar /novo-processo para criar Processo de Marketing ou Leva 2</li>
+        <li><span class="check-fut">◌</span>Neo revisar os 6 documentos de 21.1 (buscar inconsistências)</li>
+        <li><span class="check-fut">◌</span>Odin analisar o pipeline comercial ativo</li>
+        <li><span class="check-fut">◌</span>Atena propor OKRs para um Setor</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item future">
+      <div class="roadmap-header">
+        <div class="roadmap-phase">◻ Leva 2 — Processo Operacional + Mapeamento ClickUp</div>
+        <div class="roadmap-when">Semanas 3–4</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li><span class="check-fut">◌</span>Documentar Processo Operacional com nível de detalhe do Comercial</li>
+        <li><span class="check-fut">◌</span>Criar 08 - Mapeamento ClickUp.md (como cada nível vira estrutura no ClickUp)</li>
+        <li><span class="check-fut">◌</span>Criar 09 - Padrão de Instanciação.md</li>
+        <li><span class="check-fut">◌</span>Atualizar skill processo-operacional com detalhes completos</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item future">
+      <div class="roadmap-header">
+        <div class="roadmap-phase">◻ Camada Estratégica — OKRs, KPIs, Dashboards</div>
+        <div class="roadmap-when">Médio prazo</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li><span class="check-fut">◌</span>Definir OKRs por Setor (Comercial, Operacional)</li>
+        <li><span class="check-fut">◌</span>Criar KPIs com fonte de dado mapeada</li>
+        <li><span class="check-fut">◌</span>Dashboard estratégico em 21.3/v1.2/</li>
+        <li><span class="check-fut">◌</span>Conectar estratégia ↔ processos operacionais</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-item future">
+      <div class="roadmap-header">
+        <div class="roadmap-phase">◻ Plano C — Harness Multi-Agent</div>
+        <div class="roadmap-when">Longo prazo (após Plano B consolidado)</div>
+      </div>
+      <ul class="roadmap-tasks">
+        <li><span class="check-fut">◌</span>Arquitetura Planner (Neo) → Generator → Evaluator (Atena)</li>
+        <li><span class="check-fut">◌</span>Sprint Contracts para tarefas complexas</li>
+        <li><span class="check-fut">◌</span>Sistema de handoff estruturado entre sessões longas</li>
+        <li><span class="check-fut">◌</span>Templates SPEC.md, PROGRESS.md, REVIEW.md</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

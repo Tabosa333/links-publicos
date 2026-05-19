@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Formulário de feedback e NPS - TecnoFácil">
+    <title>Seu Feedback é Importante - TecnoFácil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1E40AF;
+            --primary-light: #3B82F6;
+            --accent: #10B981;
+            --accent-light: #34D399;
+            --dark: #1E293B;
+            --dark-light: #334155;
+            --light: #F8FAFC;
+            --gray: #E2E8F0;
+            --text: #0F172A;
+            --red: #EF4444;
+            --yellow: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* NPS Score Selector */
+        .nps-container {
+            margin: 2rem 0;
+        }
+
+        .nps-label {
+            display: block;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--dark-light);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .nps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nps-score {
+            aspect-ratio: 1;
+            border: 2px solid var(--gray);
+            border-radius: 10px;
+            background: white;
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nps-score:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .nps-score.detractor {
+            color: white;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            border-color: #DC2626;
+        }
+
+        .nps-score.passive {
+            color: white;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-color: #D97706;
+        }
+
+        .nps-score.promoter {
+            color: white;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-color: #059669;
+        }
+
+        .nps-score.selected {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .nps-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--dark-light);
+            font-weight: 500;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* Follow-up Questions */
+        .follow-up {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .follow-up.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .follow-up-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Rating Scales */
+        .rating-group {
+            margin-bottom: 2rem;
+        }
+
+        .rating-label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .rating-scale {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 0.75rem;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .rating-option:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        .rating-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Text Areas */
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .textarea-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .char-count {
+            font-size: 0.85rem;
+            color: var(--dark-light);
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        .success-screen.active {
+            display: block;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-message h2 {
+            color: var(--accent);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message p {
+            color: var(--dark-light);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-subtext {
+            color: var(--dark-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .nps-grid {
+                grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .nps-score {
+                font-size: 0.85rem;
+            }
+
+            .rating-option {
+                min-width: 50px;
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        /* Hidden input */
+        input[type="hidden"] {
+            display: none;
+        }
+
+        .confidence-note {
+            background: rgba(37, 99, 235, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--dark-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Sua Opinião Importa! 📊</h1>
+            <p>Ajude-nos a melhorar cada dia mais</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <form id="feedbackForm">
+                <!-- NPS Section -->
+                <div class="form-section active" id="npsSection">
+                    <h2 class="section-title">Como você avalia seu projeto conosco?</h2>
+                    <p style="color: var(--dark-light); margin-bottom: 1.5rem;">Numa escala de 0 a 10, qual é a probabilidade de você nos recomendar para um colega ou amigo?</p>
+
+                    <div class="nps-container">
+                        <div class="nps-label">
+                            <span style="float: left; font-size: 0.85rem;">Improvável</span>
+                            <span style="float: right; font-size: 0.85rem;">Muito Provável</span>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div class="nps-grid">
+                            <button type="button" class="nps-score detractor" data-score="0" onclick="selectNPS(0)">0</button>
+                            <button type="button" class="nps-score detractor" data-score="1" onclick="selectNPS(1)">1</button>
+                            <button type="button" class="nps-score detractor" data-score="2" onclick="selectNPS(2)">2</button>
+                            <button type="button" class="nps-score detractor" data-score="3" onclick="selectNPS(3)">3</button>
+                            <button type="button" class="nps-score detractor" data-score="4" onclick="selectNPS(4)">4</button>
+                            <button type="button" class="nps-score detractor" data-score="5" onclick="selectNPS(5)">5</button>
+                            <button type="button" class="nps-score detractor" data-score="6" onclick="selectNPS(6)">6</button>
+                            <button type="button" class="nps-score passive" data-score="7" onclick="selectNPS(7)">7</button>
+                            <button type="button" class="nps-score passive" data-score="8" onclick="selectNPS(8)">8</button>
+                            <button type="button" class="nps-score promoter" data-score="9" onclick="selectNPS(9)">9</button>
+                            <button type="button" class="nps-score promoter" data-score="10" onclick="selectNPS(10)">10</button>
+                        </div>
+                        <div class="nps-legend">
+                            <span>🔴 Detrator (0-6)</span>
+                            <span>🟡 Passivo (7-8)</span>
+                            <span>🟢 Promotor (9-10)</span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="npsScore" name="nps_score">
+
+                    <!-- Detractor Follow-up -->
+                    <div class="follow-up" id="detractorFollowUp">
+                        <div class="follow-up-title">
+                            <span>🔴 Entendemos seu feedback</span>
+                        </div>
+                        <p style="color: var(--dark-light); margin-bottom: 1.5rem;">Qual foi o principal motivo da sua avaliação?</p>
+
+                        <div class="rating-group">
+                            <label class="textarea-label">O que podemos melhorar?</label>
+                            <textarea id="detractorFeedback" name="detractor_feedback" placeholder="Descreva o que não atendeu às suas expectativas..."></textarea>
+                            <div class="char-count"><span id="detractorCount">0</span>/500</div>
+                        </div>
+
+                        <div class="confidence-note">
+                            <strong>Queremos resolver isso!</strong> Oferecemos uma sessão de 1h com nosso time para revisar o projeto e implementar ajustes. Você tem interesse?
+                        </div>
+                    </div>
+
+                    <!-- Passive Follow-up -->
+                    <div class="follow-up" id="passiveFollowUp">
+                        <div class="follow-up-title">
+                            <span>🟡 Temos potencial!</span>
+                        </div>
+                        <p style="color: var(--dark-light); margin-bottom: 1.5rem;">O que você sugere para melhorar ainda mais?</p>
+
+                        <div class="rating-group">
+                            <label class="textarea-label">Sugestões de melhoria</label>
+                            <textarea id="passiveFeedback" name="passive_feedback" placeholder="Compartilhe suas ideias..."></textarea>
+                            <div class="char-count"><span id="passiveCount">0</span>/500</div>
+                        </div>
+                    </div>
+
+                    <!-- Promoter Follow-up -->
+                    <div class="follow-up" id="promoterFollowUp">
+                        <div class="follow-up-title">
+                            <span>🟢 Excelente! Obrigado!</span>
+                        </div>
+                        <p style="color: var(--dark-light); margin-bottom: 1.5rem;">Seus comentários nos motivam a continuar crescendo. Tem algo mais que gostaria de compartilhar?</p>
+
+                        <div class="rating-group">
+                            <label class="textarea-label">Comentários adicionais (opcional)</label>
+                            <textarea id="promoterFeedback" name="promoter_feedback" placeholder="Sua opinião é muito valiosa..."></textarea>
+                            <div class="char-count"><span id="promoterCount">0</span>/500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Ratings Section -->
+                <div class="form-section" id="ratingsSection">
+                    <h2 class="section-title">Avaliação Detalhada</h2>
+                    <p style="color: var(--dark-light); margin-bottom: 2rem;">Por favor, avalie os seguintes aspectos do nosso trabalho:</p>
+
+                    <!-- Quality Rating -->
+                    <div class="rating-group">
+                        <label class="rating-label">Qualidade do Trabalho Realizado</label>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-option" data-rating="quality" data-value="1" onclick="setRating('quality', 1)">⭐</button>
+                            <button type="button" class="rating-option" data-rating="quality" data-value="2" onclick="setRating('quality', 2)">⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="quality" data-value="3" onclick="setRating('quality', 3)">⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="quality" data-value="4" onclick="setRating('quality', 4)">⭐⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="quality" data-value="5" onclick="setRating('quality', 5)">⭐⭐⭐⭐⭐</button>
+                        </div>
+                        <input type="hidden" name="quality_rating" id="quality_rating">
+                    </div>
+
+                    <!-- Communication Rating -->
+                    <div class="rating-group">
+                        <label class="rating-label">Comunicação e Atendimento</label>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-option" data-rating="communication" data-value="1" onclick="setRating('communication', 1)">⭐</button>
+                            <button type="button" class="rating-option" data-rating="communication" data-value="2" onclick="setRating('communication', 2)">⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="communication" data-value="3" onclick="setRating('communication', 3)">⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="communication" data-value="4" onclick="setRating('communication', 4)">⭐⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="communication" data-value="5" onclick="setRating('communication', 5)">⭐⭐⭐⭐⭐</button>
+                        </div>
+                        <input type="hidden" name="communication_rating" id="communication_rating">
+                    </div>
+
+                    <!-- Timeline Rating -->
+                    <div class="rating-group">
+                        <label class="rating-label">Cumprimento de Prazos</label>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-option" data-rating="timeline" data-value="1" onclick="setRating('timeline', 1)">⭐</button>
+                            <button type="button" class="rating-option" data-rating="timeline" data-value="2" onclick="setRating('timeline', 2)">⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="timeline" data-value="3" onclick="setRating('timeline', 3)">⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="timeline" data-value="4" onclick="setRating('timeline', 4)">⭐⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="timeline" data-value="5" onclick="setRating('timeline', 5)">⭐⭐⭐⭐⭐</button>
+                        </div>
+                        <input type="hidden" name="timeline_rating" id="timeline_rating">
+                    </div>
+
+                    <!-- Value Rating -->
+                    <div class="rating-group">
+                        <label class="rating-label">Custo-Benefício / Valor Entregue</label>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-option" data-rating="value" data-value="1" onclick="setRating('value', 1)">⭐</button>
+                            <button type="button" class="rating-option" data-rating="value" data-value="2" onclick="setRating('value', 2)">⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="value" data-value="3" onclick="setRating('value', 3)">⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="value" data-value="4" onclick="setRating('value', 4)">⭐⭐⭐⭐</button>
+                            <button type="button" class="rating-option" data-rating="value" data-value="5" onclick="setRating('value', 5)">⭐⭐⭐⭐⭐</button>
+                        </div>
+                        <input type="hidden" name="value_rating" id="value_rating">
+                    </div>
+                </div>
+
+                <!-- Additional Feedback Section -->
+                <div class="form-section" id="additionalSection">
+                    <h2 class="section-title">Informações Finais</h2>
+
+                    <div class="rating-group">
+                        <label class="textarea-label">Algum comentário final que gostaria de compartilhar?</label>
+                        <textarea id="generalFeedback" name="general_feedback" placeholder="Qualquer feedback é bem-vindo..."></textarea>
+                        <div class="char-count"><span id="generalCount">0</span>/1000</div>
+                    </div>
+
+                    <div class="rating-group">
+                        <label class="rating-label">Você se importaria em ser mencionado em um depoimento? (opcional)</label>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-option" data-rating="testimonial" data-value="sim" onclick="setRating('testimonial', 'sim')">Sim, com prazer!</button>
+                            <button type="button" class="rating-option" data-rating="testimonial" data-value="nao" onclick="setRating('testimonial', 'nao')">Prefiro não</button>
+                        </div>
+                        <input type="hidden" name="testimonial" id="testimonial">
+                    </div>
+                </div>
+
+                <!-- Success Screen -->
+                <div class="success-screen" id="successScreen">
+                    <div class="success-icon">✓</div>
+                    <div class="success-message">
+                        <h2>Obrigado pelo seu Feedback!</h2>
+                        <p>Suas respostas foram registradas com sucesso.</p>
+                    </div>
+                    <div class="success-subtext">
+                        <p style="margin-bottom: 1rem;">Nós valorizamos sua opinião e usaremos seus comentários para melhorar continuamente nossos serviços.</p>
+                        <p>Se marcou interesse em melhorias, nosso time entrará em contato em breve!</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="button-group" id="navigationButtons">
+                    <button type="button" class="btn-secondary" id="prevBtn" style="display: none;" onclick="previousSection()">← Anterior</button>
+                    <button type="button" class="btn-primary" id="nextBtn" onclick="nextSection()">Próximo →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 3;
+        let selectedNPS = null;
+
+        function selectNPS(score) {
+            selectedNPS = score;
+            document.getElementById('npsScore').value = score;
+
+            // Update visual selection
+            document.querySelectorAll('.nps-score').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-score="${score}"]`).classList.add('selected');
+
+            // Show appropriate follow-up
+            document.querySelectorAll('.follow-up').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (score <= 6) {
+                document.getElementById('detractorFollowUp').classList.add('active');
+            } else if (score <= 8) {
+                document.getElementById('passiveFollowUp').classList.add('active');
+            } else {
+                document.getElementById('promoterFollowUp').classList.add('active');
+            }
+        }
+
+        function setRating(category, value) {
+            document.getElementById(`${category}_rating`).value = value;
+            document.getElementById(category).value = value;
+
+            // Visual feedback
+            document.querySelectorAll(`[data-rating="${category}"]`).forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-rating="${category}"][data-value="${value}"]`).classList.add('selected');
+        }
+
+        // Character counters
+        ['detractorFeedback', 'passiveFeedback', 'promoterFeedback', 'generalFeedback'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                const counterId = id.replace('Feedback', 'Count');
+                element.addEventListener('input', function() {
+                    document.getElementById(counterId).textContent = this.value.length;
+                });
+            }
+        });
+
+        function nextSection() {
+            // Validate current section
+            if (currentSection === 1 && !selectedNPS) {
+                alert('Por favor, selecione uma nota de 0 a 10.');
+                return;
+            }
+
+            if (currentSection < totalSections) {
+                currentSection++;
+                updateSectionDisplay();
+            } else {
+                submitForm();
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                currentSection--;
+                updateSectionDisplay();
+            }
+        }
+
+        function updateSectionDisplay() {
+            document.querySelectorAll('.form-section').forEach((section, index) => {
+                section.classList.remove('active');
+                if (index + 1 === currentSection) {
+                    section.classList.add('active');
+                }
+            });
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = currentSection === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = currentSection === totalSections ? 'Enviar ✓' : 'Próximo →';
+
+            // Scroll to top
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitForm() {
+            const formData = new FormData(document.getElementById('feedbackForm'));
+
+            // Log form data (in production, send to server)
+            console.log('Form Data:', Object.fromEntries(formData));
+
+            // Show success screen
+            document.getElementById('npsSection').classList.remove('active');
+            document.getElementById('ratingsSection').classList.remove('active');
+            document.getElementById('additionalSection').classList.remove('active');
+            document.getElementById('successScreen').classList.add('active');
+            document.getElementById('navigationButtons').style.display = 'none';
+
+            // Scroll to top
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

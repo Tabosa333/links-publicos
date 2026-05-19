@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SpinFlow Hub</title>
+<style>
+/* ── DESIGN.md CANÔNICO ── */
+:root {
+  /* Fundação — escala de cinzas escuros */
+  --bg:        #0d0f17;
+  --surface:   #141722;
+  --surface-2: #1b2030;
+  --surface-3: #232a3d;
+  --line:      #2e3650;
+  --line-soft: #242b40;
+
+  /* Tipografia */
+  --text:  #eef2ff;
+  --muted: #9aa3bd;
+  --soft:  #68718d;
+
+  /* Cor primária da marca */
+  --purple:      #7c6fff;
+  --purple-alt:  #a855f7;
+  --purple-glow: rgba(124,111,255,0.09);
+  --purple-mid:  rgba(124,111,255,0.18);
+
+  /* Paleta semântica por setor */
+  --commercial: #e84c3d;
+  --clients:    #48bb78;
+  --projects:   #4b9ef0;
+  --ops:        #ff7043;
+  --marketing:  #f4c842;
+  --people:     #fb7185;
+  --innovation: #22d3ee;
+  --strategy:   #c8d0e4;
+  --process:    #a855f7;
+  --amber:      #f59e0b;
+  --opt:        #60a5fa;
+
+  /* Layout */
+  --radius: 8px;
+  --shadow: 0 18px 45px rgba(0,0,0,.28);
+  --nav-h:  54px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+
+/* ═══════════════════════════════
+   TOP NAV — glassmorphism canônico
+═══════════════════════════════ */
+.topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(13,15,23,.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  z-index: 300;
+  gap: 8px;
+}
+
+.nav-btn {
+  width: 38px; height: 38px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: rgba(35,42,61,.72);
+  color: var(--muted);
+  font-size: 17px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.nav-btn:hover  { border-color: var(--purple); color: var(--purple); background: var(--purple-glow); }
+.nav-btn:active { transform: scale(.94); }
+.nav-btn.hidden { opacity: 0; pointer-events: none; }
+
+.nav-center {
+  flex: 1; display: flex; align-items: center;
+  justify-content: center; gap: 8px; min-width: 0;
+}
+.nav-title {
+  font-size: 13px; font-weight: 750; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: 0;
+}
+.nav-badge {
+  font-size: 10px; font-weight: 750; letter-spacing: .06em;
+  color: var(--purple);
+  background: var(--purple-glow);
+  border: 1px solid rgba(124,111,255,.25);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════
+   PAGES WRAPPER
+═══════════════════════════════ */
+.pages-wrapper {
+  position: fixed;
+  top: var(--nav-h); left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+.page {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+  padding: 20px 16px 88px;
+  background:
+    linear-gradient(180deg, var(--purple-glow) 0%, transparent 300px),
+    var(--bg);
+}
+.page.active { display: block; }
+
+/* ═══════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════ */
+.progress-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--line-soft); z-index: 300;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--purple-alt));
+  transition: width .35s ease;
+}
+
+/* ═══════════════════════════════
+   MENU PAGE
+═══════════════════════════════ */
+.menu-header { text-align: center; padding: 6px 0 28px; }
+
+.brand-mark {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c6fff, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; font-weight: 800; color: #fff;
+  letter-spacing: -.02em;
+  margin: 0 auto 14px;
+  box-shadow: 0 8px 24px rgba(124,111,255,.35);
+}
+
+.menu-title {
+  font-size: 22px; font-weight: 800; color: var(--text);
+  letter-spacing: 0; margin-bottom: 6px;
+}
+.menu-sub { font-size: 13px; color: var(--muted); }
+
+.step-list { display: flex; flex-direction: column; gap: 8px; }
+
+.step-card {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  transition: border-color .15s, transform .12s, background .15s;
+  box-shadow: var(--shadow);
+}
+.step-card:hover  { border-color: rgba(124,111,255,.55); background: var(--surface-2); transform: translateY(-1px); }
+.step-card:active { transform: scale(.98); }
+
+.step-dot {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+.step-info { flex: 1; min-width: 0; }
+.step-num {
+  font-size: 10px; font-weight: 750; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--soft); margin-bottom: 1px;
+}
+.step-name { font-size: 15px; font-weight: 760; color: var(--text); }
+.step-desc { font-size: 12px; color: var(--muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.step-arrow { color: var(--soft); font-size: 16px; flex-shrink: 0; }
+
+/* ═══════════════════════════════
+   CONTEÚDO GERAL
+═══════════════════════════════ */
+.eyebrow {
+  color: var(--purple); font-size: 12px; font-weight: 750;
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px;
+}
+.page-title {
+  font-size: clamp(20px, 5vw, 28px); font-weight: 800; line-height: 1.15;
+  color: var(--text); margin-bottom: 10px;
+}
+.page-lead { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 4px; }
+.page-header { margin-bottom: 24px; }
+
+/* ── Seção label ── */
+.section-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--soft);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 12px;
+}
+.section-block { margin: 22px 0; }
+
+/* ── KPI row ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 16px 0; }
+.kpi {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 8px; text-align: center;
+}
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--purple); }
+.kpi-lab { font-size: 10px; color: var(--soft); margin-top: 2px; line-height: 1.3; }
+
+/* ── Cards ── */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.card {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  transition: border-color .15s, transform .12s;
+}
+.card:hover { border-color: rgba(124,111,255,.4); transform: translateY(-1px); }
+.card h3 { font-size: 14px; font-weight: 760; margin-bottom: 5px; color: var(--text); }
+.card p  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── Tags chip ── */
+.chip {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--line);
+  background: rgba(35,42,61,.72);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 11px; font-weight: 650;
+}
+.chip-existe  { border-color: rgba(72,187,120,.35); color: var(--clients); background: rgba(72,187,120,.08); }
+.chip-vazio   { border-color: rgba(245,158,11,.35); color: var(--amber); background: rgba(245,158,11,.08); }
+.chip-gap     { border-color: rgba(75,158,240,.35); color: var(--projects); background: rgba(75,158,240,.08); }
+.chip-criar   { border-color: rgba(168,85,247,.35); color: var(--process); background: rgba(168,85,247,.08); }
+
+/* ── Dot ── */
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  display: inline-block; flex-shrink: 0;
+  background: currentColor;
+}
+
+/* ── Panel ── */
+.panel {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 8px 0;
+}
+.panel-title { font-size: 13px; font-weight: 760; margin-bottom: 10px; color: var(--text); }
+.mini-list { padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
+.mini-list li { font-size: 13px; color: var(--muted); }
+
+/* ── Status flow ── */
+.status-chain { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin: 10px 0; }
+.status-pill {
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 11px; font-weight: 720;
+  background: rgba(255,255,255,.04);
+}
+.arrow-sep { color: var(--soft); font-size: 12px; }
+
+/* ── Hierarquia ── */
+.hierarquia { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+.nivel {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.nivel-n { font-size: 10px; font-weight: 800; color: var(--soft); width: 20px; flex-shrink: 0; }
+.nivel-name { font-size: 14px; font-weight: 760; color: var(--text); flex: 1; }
+.nivel-desc { font-size: 11px; color: var(--muted); }
+
+/* ── Fases ── */
+.fases-list { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.fase-item {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.fase-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-top: 3px solid transparent;
+}
+.fase-body { padding: 0 14px 12px; }
+.fase-num-badge { font-size: 10px; font-weight: 800; letter-spacing: .1em; color: var(--soft); }
+.fase-name-big  { font-size: 16px; font-weight: 800; }
+.fase-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.fase-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 999px;
+  background: rgba(35,42,61,.72); border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+/* ── Princípios ── */
+.principios-list { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.principio {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.p-badge {
+  font-size: 10px; font-weight: 800;
+  background: var(--purple-glow); color: var(--purple);
+  border: 1px solid rgba(124,111,255,.25);
+  border-radius: 6px; padding: 2px 6px;
+  white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+}
+.p-title { font-size: 13px; font-weight: 760; margin-bottom: 3px; color: var(--text); }
+.p-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── Padrões ── */
+.padroes-list { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.padrao {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.padrao-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.padrao-name { font-size: 13px; font-weight: 760; color: var(--process); }
+.padrao-aplica {
+  font-size: 10px; font-weight: 700; color: var(--innovation);
+  background: rgba(34,211,238,.08); border: 1px solid rgba(34,211,238,.2);
+  border-radius: 4px; padding: 1px 6px;
+}
+.padrao-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+.padrao-diagrama {
+  font-family: "Cascadia Code", "Fira Code", monospace;
+  font-size: 11px;
+  background: rgba(20,23,34,.8); border: 1px solid var(--line-soft);
+  border-radius: 6px; padding: 8px 10px;
+  color: var(--clients); line-height: 1.65;
+  white-space: pre; overflow-x: auto;
+}
+
+/* ── Agents ── */
+.agents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+.agent-card {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px; text-align: center;
+  transition: border-color .15s, transform .12s;
+}
+.agent-card:hover { border-color: rgba(168,85,247,.4); transform: translateY(-1px); }
+.agent-avatar { font-size: 22px; margin-bottom: 4px; }
+.agent-name { font-size: 13px; font-weight: 800; color: var(--process); margin-bottom: 2px; }
+.agent-dom  { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* ── Dupla natureza ── */
+.dupla-card {
+  border-radius: var(--radius);
+  padding: 16px; margin: 8px 0;
+  border: 1px solid var(--line);
+}
+.dupla-card.proprio { background: linear-gradient(135deg,rgba(75,158,240,.08),rgba(34,211,238,.04)); border-color: rgba(75,158,240,.25); }
+.dupla-card.cliente { background: linear-gradient(135deg,rgba(168,85,247,.08),rgba(251,113,133,.04)); border-color: rgba(168,85,247,.25); }
+.dupla-pill {
+  display: inline-block; font-size: 9px; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px; margin-bottom: 8px;
+}
+.proprio .dupla-pill { background: rgba(75,158,240,.18); color: var(--projects); }
+.cliente .dupla-pill { background: rgba(168,85,247,.18); color: var(--process); }
+.dupla-title { font-size: 15px; font-weight: 800; margin-bottom: 5px; color: var(--text); }
+.dupla-desc  { font-size: 13px; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+.dupla-items { display: flex; flex-direction: column; gap: 5px; }
+.dupla-item  { font-size: 12px; color: var(--muted); display: flex; gap: 7px; }
+.dupla-item::before { font-weight: 800; flex-shrink: 0; }
+.proprio .dupla-item::before { content: '→'; color: var(--projects); }
+.cliente .dupla-item::before { content: '→'; color: var(--process); }
+
+/* ── Table ── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  background: rgba(27,32,48,.78);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: 12px;
+}
+.data-table th {
+  text-align: left; padding: 9px 12px;
+  background: rgba(20,23,34,.7);
+  font-size: 10px; font-weight: 760; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--soft);
+  border-bottom: 1px solid var(--line);
+}
+.data-table td {
+  padding: 9px 12px; border-bottom: 1px solid var(--line-soft);
+  color: var(--muted); vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: 0; }
+.data-table strong { color: var(--text); }
+
+/* ── Roadmap timeline ── */
+.roadmap-list { display: flex; flex-direction: column; gap: 0; margin: 12px 0; margin-left: 6px; }
+.roadmap-item {
+  display: flex; gap: 12px;
+  border-left: 2px solid var(--purple);
+  padding: 10px 0 10px 14px;
+  position: relative;
+}
+.roadmap-item::before {
+  content: ''; position: absolute;
+  left: -5px; top: 16px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--purple);
+}
+.roadmap-date { font-size: 11px; font-weight: 800; color: var(--purple); width: 72px; flex-shrink: 0; margin-top: 1px; }
+.roadmap-text { font-size: 13px; color: var(--muted); }
+
+/* ── Gap cards ── */
+.gap-col { display: flex; flex-direction: column; gap: 8px; }
+.gap-panel {
+  background: rgba(27,32,48,.82);
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.gap-title { font-size: 13px; font-weight: 760; margin-bottom: 5px; }
+.gap-row   { font-size: 12px; color: var(--muted); }
+.gap-row strong { color: var(--text); }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--line-soft); margin: 20px 0; }
+
+/* ═══════════════════════════════
+   MAPA TECH — layout ClickUp
+═══════════════════════════════ */
+.mapa-layout {
+  display: flex;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+}
+
+.mapa-sidebar {
+  width: 196px; flex-shrink: 0;
+  background: rgba(20,23,34,.95);
+  border-right: 1px solid var(--line);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+}
+
+.mapa-main {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 14px 80px;
+}
+
+.mapa-search {
+  width: 100%; height: 36px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(20,23,34,.9);
+  color: var(--text);
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 12px;
+}
+.mapa-search:focus { border-color: var(--purple); }
+.mapa-search::placeholder { color: var(--soft); }
+
+/* sidebar folders */
+.folder-group { margin-bottom: 2px; }
+.folder-btn {
+  width: 100%; background: none; border: none;
+  padding: 7px 10px;
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer;
+  font-size: 12px; font-weight: 760;
+  color: var(--muted); text-align: left;
+  border-left: 3px solid transparent;
+  transition: color .1s, background .1s;
+}
+.folder-btn:hover { color: var(--text); background: var(--purple-glow); }
+.f-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.f-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.folder-items { padding-left: 6px; }
+.list-btn {
+  width: 100%; background: none; border: none;
+  padding: 6px 10px 6px 14px;
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer;
+  font-size: 11px; font-weight: 600;
+  color: var(--muted); text-align: left;
+  border-radius: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color .1s, background .1s;
+}
+.list-btn:hover  { color: var(--text); background: var(--surface-3); }
+.list-btn.active { color: var(--text); font-weight: 760; }
+
+/* detail panel */
+.detail-empty {
+  text-align: center; padding: 48px 16px;
+  color: var(--soft); font-size: 13px;
+}
+.detail-header {
+  margin-bottom: 16px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.detail-eyebrow {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.detail-title { font-size: 20px; font-weight: 800; margin-bottom: 7px; color: var(--text); }
+.detail-goal  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.entity-chip {
+  display: inline-block; font-size: 10px; font-weight: 760;
+  border: 1.5px solid; border-radius: 999px;
+  padding: 3px 10px; margin-top: 10px;
+}
+
+.info-block {
+  background: rgba(20,23,34,.62);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 12px; margin-bottom: 10px;
+}
+.info-block-label {
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--soft); margin-bottom: 8px;
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  display: inline-flex; align-items: center;
+  border: 1px solid; border-radius: 999px;
+  padding: 4px 9px; font-size: 11px; font-weight: 650;
+}
+.status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.s-pill {
+  border: 1px solid currentColor;
+  border-radius: 7px; padding: 4px 9px;
+  font-size: 11px; font-weight: 720;
+  background: rgba(255,255,255,.04);
+}
+.s-sep { color: var(--soft); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav" id="topnav">
+  <button class="nav-btn hidden" id="btnBack" onclick="navBack()">←</button>
+  <div class="nav-center">
+    <span class="nav-title" id="navTitle">SpinFlow Hub</span>
+    <span class="nav-badge" id="navBadge">Menu</span>
+  </div>
+  <button class="nav-btn hidden" id="btnNext" onclick="navNext()">→</button>
+</nav>
+
+<!-- PAGES WRAPPER -->
+<div class="pages-wrapper">
+
+  <!-- ══════ PAGE 0 — MENU ══════ -->
+  <div class="page active" id="page-0">
+    <div class="menu-header">
+      <div class="brand-mark">SF</div>
+      <div class="menu-title">SpinFlow</div>
+      <div class="menu-sub">Selecione uma seção para explorar</div>
+    </div>
+    <div class="step-list">
+      <div class="step-card" onclick="goToPage(1)">
+        <div class="step-dot" style="background:var(--purple-glow);border-color:rgba(124,111,255,.3)">🌌</div>
+        <div class="step-info">
+          <div class="step-num">Etapa 1</div>
+          <div class="step-name">Conceito Estratégico</div>
+          <div class="step-desc">Hierarquia, fases, princípios e padrões de fluxo</div>
+        </div>
+        <div class="step-arrow">›</div>
+      </div>
+      <div class="step-card" onclick="goToPage(2)">
+        <div class="step-dot" style="background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.25)">🗺️</div>
+        <div class="step-info">
+          <div class="step-num">Etapa 2</div>
+          <div class="step-name">Mapa Tech</div>
+          <div class="step-desc">Estrutura de listas e entidades no ClickUp</div>
+        </div>
+        <div class="step-arrow">›</div>
+      </div>
+      <div class="step-card" onclick="goToPage(3)">
+        <div class="step-dot" style="background:rgba(200,208,228,.08);border-color:rgba(200,208,228,.2)">🎯</div>
+        <div class="step-info">
+          <div class="step-num">Etapa 3</div>
+          <div class="step-name">Camada Estratégica</div>
+          <div class="step-desc">OKRs, KPIs, dashboards e projetos internos</div>
+        </div>
+        <div class="step-arrow">›</div>
+      </div>
+      <div class="step-card" onclick="goToPage(4)">
+        <div class="step-dot" style="background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.25)">🔍</div>
+        <div class="step-info">
+          <div class="step-num">Etapa 4</div>
+          <div class="step-name">Diagnóstico</div>
+          <div class="step-desc">Gap estratégico e capacidades existentes</div>
+        </div>
+        <div class="step-arrow">›</div>
+      </div>
+      <div class="step-card" onclick="goToPage(5)">
+        <div class="step-dot" style="background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.25)">📋</div>
+        <div class="step-info">
+          <div class="step-num">Etapa 5</div>
+          <div class="step-name">Termos e Cargos</div>
+          <div class="step-desc">Equivalências com vocabulário de empresas maduras</div>
+        </div>
+        <div class="step-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE 1 — CONCEITO ESTRATÉGICO ══════ -->
+  <div class="page" id="page-1">
+    <div class="page-header">
+      <div class="eyebrow">Metodologia SpinFlow</div>
+      <div class="page-title">Uma linguagem única para operar e escalar qualquer empresa.</div>
+      <div class="page-lead">SpinFlow organiza a operação em 7 níveis hierárquicos claros — do macro ao micro — criando uma linguagem comum entre todos os setores. Serve ao uso próprio e como produto replicável para clientes.</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-val">7</div><div class="kpi-lab">Níveis hierárquicos</div></div>
+      <div class="kpi"><div class="kpi-val">5</div><div class="kpi-lab">Fases canônicas</div></div>
+      <div class="kpi"><div class="kpi-val">9</div><div class="kpi-lab">Princípios</div></div>
+      <div class="kpi"><div class="kpi-val">9</div><div class="kpi-lab">Padrões de fluxo</div></div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Hierarquia Canônica — 7 Níveis</div>
+      <div class="hierarquia">
+        <div class="nivel" style="border-left-color:var(--purple)">
+          <div class="nivel-n">N1</div>
+          <div style="flex:1">
+            <div class="nivel-name">🏢 Empresa</div>
+            <div class="nivel-desc">Missão, visão, posicionamento e limites de atuação</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--innovation)">
+          <div class="nivel-n">N2</div>
+          <div style="flex:1">
+            <div class="nivel-name">🏛️ Setor</div>
+            <div class="nivel-desc">Eixo funcional — Comercial, Operacional, Marketing…</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--process)">
+          <div class="nivel-n">N3</div>
+          <div style="flex:1">
+            <div class="nivel-name">⚙️ Processo</div>
+            <div class="nivel-desc">Fluxo contínuo e repetível com critério de sucesso</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--amber)">
+          <div class="nivel-n">N4</div>
+          <div style="flex:1">
+            <div class="nivel-name">🚦 Fase</div>
+            <div class="nivel-desc">Marco linear — as 5 fases canônicas</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--clients)">
+          <div class="nivel-n">N5</div>
+          <div style="flex:1">
+            <div class="nivel-name">📌 Etapa</div>
+            <div class="nivel-desc">Bloco de trabalho dentro de uma fase</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--people)">
+          <div class="nivel-n">N6</div>
+          <div style="flex:1">
+            <div class="nivel-name">📋 Atividade</div>
+            <div class="nivel-desc">SOP — fecha por critério de sucesso, não por checklist</div>
+          </div>
+        </div>
+        <div class="nivel" style="border-left-color:var(--commercial)">
+          <div class="nivel-n">N7</div>
+          <div style="flex:1">
+            <div class="nivel-name">✅ Tarefa</div>
+            <div class="nivel-desc">Instância concreta e volátil de execução</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">As 5 Fases Canônicas</div>
+      <div class="fases-list">
+        <div class="fase-item">
+          <div class="fase-head" style="border-top-color:#6366f1">
+            <span style="font-size:20px">🔍</span>
+            <div><div class="fase-num-badge">FASE 01</div><div class="fase-name-big" style="color:#a78bfa">Preparação</div></div>
+          </div>
+          <div class="fase-body">
+            <div style="font-size:13px;color:var(--muted)">Diagnóstico, planejamento e pré-requisitos antes de iniciar qualquer operação.</div>
+            <div class="fase-tags"><span class="fase-tag">Diagnóstico</span><span class="fase-tag">Planejamento</span><span class="fase-tag">Pré-requisitos</span></div>
+          </div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-head" style="border-top-color:#0ea5e9">
+            <span style="font-size:20px">🚀</span>
+            <div><div class="fase-num-badge">FASE 02</div><div class="fase-name-big" style="color:#38bdf8">Iniciação</div></div>
+          </div>
+          <div class="fase-body">
+            <div style="font-size:13px;color:var(--muted)">Arranque oficial — formalização, onboarding e estruturação do ambiente de trabalho.</div>
+            <div class="fase-tags"><span class="fase-tag">Onboarding</span><span class="fase-tag">Formalização</span><span class="fase-tag">Setup</span></div>
+          </div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-head" style="border-top-color:#10b981">
+            <span style="font-size:20px">⚡</span>
+            <div><div class="fase-num-badge">FASE 03</div><div class="fase-name-big" style="color:var(--clients)">Execução</div></div>
+          </div>
+          <div class="fase-body">
+            <div style="font-size:13px;color:var(--muted)">Coração do processo — atividades, loops, entregas e acompanhamento ativo.</div>
+            <div class="fase-tags"><span class="fase-tag">Entrega</span><span class="fase-tag">Loop</span><span class="fase-tag">Acompanhamento</span></div>
+          </div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-head" style="border-top-color:var(--amber)">
+            <span style="font-size:20px">🎯</span>
+            <div><div class="fase-num-badge">FASE 04</div><div class="fase-name-big" style="color:var(--amber)">Finalização</div></div>
+          </div>
+          <div class="fase-body">
+            <div style="font-size:13px;color:var(--muted)">Encerramento formal — validação, entrega final, documentação e handoff.</div>
+            <div class="fase-tags"><span class="fase-tag">Validação</span><span class="fase-tag">Documentação</span><span class="fase-tag">Handoff</span></div>
+          </div>
+        </div>
+        <div class="fase-item">
+          <div class="fase-head" style="border-top-color:var(--people)">
+            <span style="font-size:20px">🔁</span>
+            <div><div class="fase-num-badge">FASE 05</div><div class="fase-name-big" style="color:var(--people)">Manutenção</div></div>
+          </div>
+          <div class="fase-body">
+            <div style="font-size:13px;color:var(--muted)">Operação contínua após entrega — monitoramento, suporte e ciclos de revisão.</div>
+            <div class="fase-tags"><span class="fase-tag">Monitoramento</span><span class="fase-tag">Suporte</span><span class="fase-tag">Ciclo de Revisão</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">9 Princípios Fundamentais</div>
+      <div class="principios-list">
+        <div class="principio"><div class="p-badge">P01</div><div><div class="p-title">🔄 Processo &gt; Projeto</div><div class="p-desc">Processos evoluem sem parar. Projetos têm fim. Toda modelagem segue a lógica de fluxo recorrente.</div></div></div>
+        <div class="principio"><div class="p-badge">P02</div><div><div class="p-title">↕️ Macro Linear, Micro Fluido</div><div class="p-desc">As 5 Fases são roadmap linear. Dentro de cada fase, atividades seguem lógica fluida de SOP.</div></div></div>
+        <div class="principio"><div class="p-badge">P03</div><div><div class="p-title">🚩 Marco como Status</div><div class="p-desc">Status é derivado do fechamento real de etapas — não declarado por mão livre.</div></div></div>
+        <div class="principio"><div class="p-badge">P04</div><div><div class="p-title">📋 Atividade é SOP, Tarefa é Execução</div><div class="p-desc">Atividade fecha por critério de sucesso. Tarefa é instância concreta e repetível.</div></div></div>
+        <div class="principio"><div class="p-badge">P05</div><div><div class="p-title">📜 Histórico por Loop</div><div class="p-desc">Tentativas falhas viram log — nunca apagadas. Nova tarefa é engatilhada. Histórico é sagrado.</div></div></div>
+        <div class="principio"><div class="p-badge">P06</div><div><div class="p-title">⚡ Previsibilidade Engatilhada</div><div class="p-desc">Tarefas em loop não são pré-criadas — nascem sob necessidade. Backlog limpo, dado utilizável.</div></div></div>
+        <div class="principio"><div class="p-badge">P07</div><div><div class="p-title">🌐 Universalidade</div><div class="p-desc">O mesmo modelo serve a todo setor. Uma linguagem comum para toda a empresa.</div></div></div>
+        <div class="principio"><div class="p-badge">P08</div><div><div class="p-title">🏛️ Composição Setorial</div><div class="p-desc">Processos vivem dentro de Setores. Cada Setor evolui independentemente sem impactar os demais.</div></div></div>
+        <div class="principio"><div class="p-badge">P09</div><div><div class="p-title">✅ Sucesso vs. Não-Sucesso</div><div class="p-desc">Toda tarefa declara "Concluída-com-sucesso" ou "Concluída-sem-sucesso". Esse binário governa todos os loops.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">9 Padrões de Fluxo</div>
+      <div class="padroes-list">
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P1 — Sequencial</span><span class="padrao-aplica">Etapas · Atividades · Tarefas</span></div><div class="padrao-desc">B só inicia após A concluir com sucesso. Usar quando há dependência real de output.</div><div class="padrao-diagrama">[A] ──── concluída ────▶ [B]</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P2 — Paralelo</span><span class="padrao-aplica">Etapas · Atividades</span></div><div class="padrao-desc">A e B progridem independentemente. Menor lead time, maior coordenação.</div><div class="padrao-diagrama">       ┌──▶ [A] ──┐
+[start]┤         ├──▶ next
+       └──▶ [B] ──┘</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P3 — Marco-libera-Fase</span><span class="padrao-aplica">Transição Fase → Fase</span></div><div class="padrao-desc">A Fase N só avança quando todas as Etapas estão concluídas. Mecanismo canônico — sempre ativo.</div><div class="padrao-diagrama">[Fase N]
+  ├── Etapa N.1  ✓
+  └── Etapa N.2  ✓
+         ▼ avança para [Fase N+1]</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P4 — Loop de Atividade</span><span class="padrao-aplica">Tarefas dentro de Atividade</span></div><div class="padrao-desc">Cada tentativa vira nova Tarefa. A anterior não é reaberta. Histórico íntegro.</div><div class="padrao-diagrama">Tarefa #1 → sem-sucesso
+Tarefa #2 → sem-sucesso
+Tarefa #3 → ✓ sucesso</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P5 — Engatilhamento Condicional</span><span class="padrao-aplica">Tarefas dentro de Atividade</span></div><div class="padrao-desc">Tarefa N+1 nasce somente se N fecha sem sucesso. Se N tem sucesso, a atividade fecha.</div><div class="padrao-diagrama">Tarefa N → sucesso?
+  ├─ Sim → Atividade fecha ✓
+  └─ Não → Engatilha N+1</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P6 — Bloqueada por Externo</span><span class="padrao-aplica">Atividade</span></div><div class="padrao-desc">Quando o bloqueio é externo, a Atividade entra em estado Bloqueada com motivo e data registrados.</div><div class="padrao-diagrama">status: Bloqueada
+motivo: "aguard. assinatura"
+desde: 2026-05-07</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P7 — Insucesso e Cascata</span><span class="padrao-aplica">Atividade → Etapa</span></div><div class="padrao-desc">Atividade sem-sucesso pode não impedir a Etapa, engatilhar alternativa, ou fechar como insucesso.</div><div class="padrao-diagrama">Atividade sem-sucesso
+  ├─ Etapa ok? → Avança
+  ├─ Atividade alt? → Loop
+  └─ Terminal → Aborta</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P8 — Derivado de Processo</span><span class="padrao-aplica">Processos Derivados</span></div><div class="padrao-desc">Um processo engatilha outro. Comercial ganho → Operacional inicia automaticamente.</div><div class="padrao-diagrama">Processo A concluído
+       ▼ engatilha
+  Processo B inicia</div></div>
+        <div class="padrao"><div class="padrao-head"><span class="padrao-name">P9 — Recorrente Autônomo</span><span class="padrao-aplica">Atividades de Manutenção</span></div><div class="padrao-desc">Atividade reativada por tempo (semanal, mensal). Não depende de evento externo.</div><div class="padrao-diagrama">timer: todo domingo 9h
+  ▼ cria Tarefa #N
+status: A fazer → loop</div></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Dupla Natureza</div>
+      <div class="dupla-card proprio">
+        <div class="dupla-pill">Uso Próprio</div>
+        <div class="dupla-title">Sistema interno da empresa</div>
+        <div class="dupla-desc">Implementação real do SpinFlow como sistema operacional da própria empresa do Rodrigo.</div>
+        <div class="dupla-items">
+          <div class="dupla-item">Comercial, Operacional, Marketing e Estratégia rodando no ClickUp</div>
+          <div class="dupla-item">Processos validados em campo com clientes reais (TecnoFácil)</div>
+          <div class="dupla-item">Spin Agents automatizando etapas recorrentes</div>
+          <div class="dupla-item">Laboratório vivo para iterar a metodologia</div>
+        </div>
+      </div>
+      <div class="dupla-card cliente">
+        <div class="dupla-pill">Produto para Clientes</div>
+        <div class="dupla-title">Metodologia replicável</div>
+        <div class="dupla-desc">O mesmo framework empacotado como produto vendável para PMEs que precisam organizar sua operação.</div>
+        <div class="dupla-items">
+          <div class="dupla-item">Onboarding estruturado nas 5 fases canônicas</div>
+          <div class="dupla-item">Templates de ClickUp prontos por setor</div>
+          <div class="dupla-item">Diagnóstico inicial usando o framework de gaps</div>
+          <div class="dupla-item">Acompanhamento contínuo via Processo de Manutenção</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Spin Agents</div>
+      <div class="agents-grid">
+        <div class="agent-card"><div class="agent-avatar">🧠</div><div class="agent-name">Neo</div><div class="agent-dom">Arquitetura da metodologia e validação de estrutura</div></div>
+        <div class="agent-card"><div class="agent-avatar">🦉</div><div class="agent-name">Atena</div><div class="agent-dom">Estratégia, OKRs e análise cross-setor</div></div>
+        <div class="agent-card"><div class="agent-avatar">⚔️</div><div class="agent-name">Odin</div><div class="agent-dom">Processo Comercial e pipeline de vendas</div></div>
+        <div class="agent-card"><div class="agent-avatar">✉️</div><div class="agent-name">Hermes</div><div class="agent-dom">Conteúdo, copy e comunicação</div></div>
+        <div class="agent-card"><div class="agent-avatar">📅</div><div class="agent-name">Eva</div><div class="agent-dom">Agenda, reuniões e follow-ups</div></div>
+        <div class="agent-card"><div class="agent-avatar">🤖</div><div class="agent-name">Operador</div><div class="agent-dom">Manutenção do sistema multi-agent</div></div>
+        <div class="agent-card"><div class="agent-avatar">📚</div><div class="agent-name">Jarvis</div><div class="agent-dom">Memória, wiki e organização do conhecimento</div></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Estado Atual — Maio 2026</div>
+      <div class="panel">
+        <div class="panel-title" style="color:var(--clients)">✅ O que já existe</div>
+        <ul class="mini-list">
+          <li>Leva 1 completa: metodologia + Processo Comercial + Processo Operacional TecnoFácil</li>
+          <li>Clientes TecnoFácil ativos: Prata Cigana, Camping Surf Tamandaré</li>
+          <li>7 Níveis, 5 Fases e 9 Princípios documentados e validados</li>
+        </ul>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--amber)">
+        <div class="panel-title" style="color:var(--amber)">⚠️ Gap Principal</div>
+        <ul class="mini-list">
+          <li>Camada estratégica vazia: OKRs, KPIs e Dashboards não implementados</li>
+          <li>Melhoria contínua sem estrutura de projetos de otimização</li>
+          <li>Equipe e RH sem modelagem formal</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE 2 — MAPA TECH ══════ -->
+  <div class="page" id="page-2" style="padding:0">
+    <div class="mapa-layout">
+      <div class="mapa-sidebar" id="mapaSidebar"></div>
+      <div class="mapa-main" id="mapaMain">
+        <input class="mapa-search" id="mapaSearch" placeholder="🔍  Buscar lista ou campo…" oninput="filterMapa(this.value)">
+        <div id="mapaDetail" class="detail-empty">
+          <div style="font-size:36px;margin-bottom:10px">🗺️</div>
+          <div style="font-weight:760;color:var(--muted);margin-bottom:4px">Selecione uma lista</div>
+          <div style="font-size:12px">Toque em qualquer lista na barra lateral</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE 3 — CAMADA ESTRATÉGICA ══════ -->
+  <div class="page" id="page-3">
+    <div class="page-header">
+      <div class="eyebrow">Direção acima da operação</div>
+      <div class="page-title">Uma camada para decidir para onde a empresa vai — e como a execução prova progresso.</div>
+      <div class="page-lead">A metodologia modela como a empresa opera. A camada estratégica define metas, capacidades, gaps e iniciativas para alimentar a operação ao longo do tempo.</div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Cadeia lógica</div>
+      <div class="status-chain">
+        <span class="status-pill" style="color:var(--amber)">Plano</span><span class="arrow-sep">→</span>
+        <span class="status-pill" style="color:var(--purple)">OKR</span><span class="arrow-sep">→</span>
+        <span class="status-pill" style="color:var(--innovation)">KPI</span><span class="arrow-sep">→</span>
+        <span class="status-pill" style="color:var(--projects)">Projeto</span><span class="arrow-sep">→</span>
+        <span class="status-pill" style="color:var(--ops)">Processo</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Estrutura recomendada no ClickUp</div>
+      <div class="gap-col">
+        <div class="gap-panel" style="border-left-color:var(--strategy)">
+          <div class="gap-title" style="color:var(--strategy)">📄 Descrição da Empresa</div>
+          <div class="gap-row" style="margin-bottom:8px">Base de identidade e posicionamento.</div>
+          <div class="status-chain">
+            <span class="status-pill" style="color:#a78bfa;font-size:10px">Rascunho</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--innovation);font-size:10px">Revisão</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--clients);font-size:10px">Aprovado</span>
+          </div>
+        </div>
+        <div class="gap-panel" style="border-left-color:var(--purple)">
+          <div class="gap-title" style="color:var(--purple)">🎯 OKRs por Ciclo</div>
+          <div class="gap-row" style="margin-bottom:8px">Objetivos trimestrais com resultados-chave mensuráveis.</div>
+          <div class="status-chain">
+            <span class="status-pill" style="color:#a78bfa;font-size:10px">Planejado</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--projects);font-size:10px">Ativo</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--amber);font-size:10px">Em risco</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--clients);font-size:10px">Concluído</span>
+          </div>
+        </div>
+        <div class="gap-panel" style="border-left-color:var(--innovation)">
+          <div class="gap-title" style="color:var(--innovation)">📊 KPIs por Processo</div>
+          <div class="gap-row" style="margin-bottom:8px">Medir saúde do processo e progresso dos KRs.</div>
+          <div class="status-chain">
+            <span class="status-pill" style="color:#a78bfa;font-size:10px">Definindo</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--projects);font-size:10px">Coletando</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--clients);font-size:10px">Monitorando</span>
+          </div>
+        </div>
+        <div class="gap-panel" style="border-left-color:var(--opt)">
+          <div class="gap-title" style="color:var(--opt)">🖥️ Dashboards</div>
+          <div class="gap-row">Consolidar informação tático-operacional para gestão visual.</div>
+        </div>
+        <div class="gap-panel" style="border-left-color:var(--projects)">
+          <div class="gap-title" style="color:var(--projects)">🚀 Projetos de Otimização Interna</div>
+          <div class="gap-row" style="margin-bottom:8px">Transformar gaps em iniciativas executáveis.</div>
+          <div class="status-chain" style="flex-wrap:wrap">
+            <span class="status-pill" style="color:#a78bfa;font-size:10px">Diagnóstico</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--innovation);font-size:10px">Planejamento</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--clients);font-size:10px">Execução</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--amber);font-size:10px">Validação</span><span class="arrow-sep">→</span>
+            <span class="status-pill" style="color:var(--people);font-size:10px">Incorporação</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Primeiro ciclo sugerido</div>
+      <div class="panel">
+        <ul class="mini-list">
+          <li>Formalizar Descrição da Empresa</li>
+          <li>Definir 3 OKRs de 90 dias</li>
+          <li>Escolher 3 a 5 KPIs para Comercial e Operacional</li>
+          <li>Criar Dashboard Tático mínimo</li>
+          <li>Abrir 1 projeto de otimização interna ligado a um gap real</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Cadência de revisão</div>
+      <div class="roadmap-list">
+        <div class="roadmap-item"><div class="roadmap-date">Semanal</div><div class="roadmap-text">Operação, bloqueios e próximas ações</div></div>
+        <div class="roadmap-item"><div class="roadmap-date">Mensal</div><div class="roadmap-text">KPIs, aprendizados e prioridades setoriais</div></div>
+        <div class="roadmap-item"><div class="roadmap-date">Trimestral</div><div class="roadmap-text">OKRs, estratégia, capacidades e roadmap</div></div>
+        <div class="roadmap-item"><div class="roadmap-date">Anual</div><div class="roadmap-text">Plano de negócios, posicionamento e portfólio</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE 4 — DIAGNÓSTICO ══════ -->
+  <div class="page" id="page-4">
+    <div class="page-header">
+      <div class="eyebrow">Gap Central</div>
+      <div class="page-title">A operação está modelada. Falta a camada que escolhe, mede e melhora.</div>
+      <div class="page-lead">O SpinFlow já tem linguagem operacional forte: 7 níveis, 5 fases, padrões de fluxo e modelos de referência. O próximo salto é conectar estratégia, métricas e melhoria contínua.</div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Inventário de capacidades</div>
+      <div class="card-grid">
+        <div class="card"><div class="chip chip-existe" style="margin-bottom:8px">✅ Existe</div><h3>Metodologia</h3><p>Hierarquia, princípios, glossário, padrões e processo comercial modelado.</p></div>
+        <div class="card"><div class="chip chip-vazio" style="margin-bottom:8px">⚠️ Vazio</div><h3>Estratégia</h3><p>Pastas existem, mas sem conteúdo real de plano, OKRs e revisão.</p></div>
+        <div class="card"><div class="chip chip-gap" style="margin-bottom:8px">🔵 Gap</div><h3>Indicadores</h3><p>KPIs e dashboards precisam virar sistema de leitura da operação.</p></div>
+        <div class="card"><div class="chip chip-criar" style="margin-bottom:8px">🔷 Criar</div><h3>Otimização</h3><p>Melhorias internas precisam morar em projetos com critério e prioridade.</p></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Mapa de gaps</div>
+      <div class="gap-col">
+        <div class="gap-panel" style="border-left-color:var(--commercial)"><div class="gap-title" style="color:var(--commercial)">Estratégia não definida</div><div class="gap-row"><strong>Impacto:</strong> Prioridades ficam ad hoc.</div><div class="gap-row"><strong>Resposta:</strong> Descrição da Empresa + OKRs + Planos Setoriais.</div></div>
+        <div class="gap-panel" style="border-left-color:var(--amber)"><div class="gap-title" style="color:var(--amber)">KPIs e dashboards inexistentes</div><div class="gap-row"><strong>Impacto:</strong> Sem leitura de saúde e desempenho.</div><div class="gap-row"><strong>Resposta:</strong> KPIs por processo e Dashboard Tático mínimo.</div></div>
+        <div class="gap-panel" style="border-left-color:var(--projects)"><div class="gap-title" style="color:var(--projects)">Melhoria contínua sem casa</div><div class="gap-row"><strong>Impacto:</strong> Ideias e ajustes ficam soltos.</div><div class="gap-row"><strong>Resposta:</strong> Projetos de Otimização Interna em 5 fases.</div></div>
+        <div class="gap-panel" style="border-left-color:var(--people)"><div class="gap-title" style="color:var(--people)">Equipe e RH sem estrutura</div><div class="gap-row"><strong>Impacto:</strong> Dificulta delegação e crescimento.</div><div class="gap-row"><strong>Resposta:</strong> Mapa de cargos, responsabilidades e onboarding.</div></div>
+        <div class="gap-panel" style="border-left-color:var(--process)"><div class="gap-title" style="color:var(--process)">Ciclo de revisão ausente</div><div class="gap-row"><strong>Impacto:</strong> A estratégia envelhece sem governança.</div><div class="gap-row"><strong>Resposta:</strong> Revisão semanal, mensal, trimestral e anual.</div></div>
+        <div class="gap-panel" style="border-left-color:var(--innovation)"><div class="gap-title" style="color:var(--innovation)">Integração estratégia–operação</div><div class="gap-row"><strong>Impacto:</strong> OKRs podem virar decoração.</div><div class="gap-row"><strong>Resposta:</strong> OKR → KPI → Projeto → Processo → SOP.</div></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Cadeia de integração pretendida</div>
+      <div class="panel">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px"><span class="status-pill" style="color:var(--amber)">Plano de Negócios</span><span style="font-size:11px;color:var(--soft)">define direção geral</span></div>
+          <span class="arrow-sep" style="padding-left:6px">↓</span>
+          <div style="display:flex;align-items:center;gap:8px"><span class="status-pill" style="color:var(--purple)">OKRs trimestrais</span><span style="font-size:11px;color:var(--soft)">traduzem em foco</span></div>
+          <span class="arrow-sep" style="padding-left:6px">↓</span>
+          <div style="display:flex;align-items:center;gap:8px"><span class="status-pill" style="color:var(--innovation)">KPIs por processo</span><span style="font-size:11px;color:var(--soft)">medem progresso</span></div>
+          <span class="arrow-sep" style="padding-left:6px">↓</span>
+          <div style="display:flex;align-items:center;gap:8px"><span class="status-pill" style="color:var(--projects)">Projetos internos</span><span style="font-size:11px;color:var(--soft)">fecham os gaps</span></div>
+          <span class="arrow-sep" style="padding-left:6px">↓</span>
+          <div style="display:flex;align-items:center;gap:8px"><span class="status-pill" style="color:var(--ops)">Processos e SOPs</span><span style="font-size:11px;color:var(--soft)">executam na ponta</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PAGE 5 — TERMOS E CARGOS ══════ -->
+  <div class="page" id="page-5">
+    <div class="page-header">
+      <div class="eyebrow">Linguagem de Empresas Maduras</div>
+      <div class="page-title">Equivalências para nomear funções, setores e responsabilidades no SpinFlow.</div>
+      <div class="page-lead">A intenção é construir primeiro para uso próprio e depois formatar como produto replicável. Esta seção traduz termos internos para conceitos comuns em empresas maiores.</div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Equivalências de cargos</div>
+      <div class="gap-col">
+        <div class="gap-panel" style="border-left-color:var(--strategy)"><div class="gap-title" style="color:var(--strategy)">👑 Dono da Empresa</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= CEO / Founder / Managing Director</div><div class="gap-row">Direção, prioridades e alocação de recursos. <strong>Foco: Estratégia.</strong></div></div>
+        <div class="gap-panel" style="border-left-color:var(--ops)"><div class="gap-title" style="color:var(--ops)">⚙️ Gerente Operacional</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= COO / Head of Operations</div><div class="gap-row">Orquestrar processos, projetos, capacidade e qualidade. <strong>Foco: Operação.</strong></div></div>
+        <div class="gap-panel" style="border-left-color:var(--amber)"><div class="gap-title" style="color:var(--amber)">🎯 Supervisor de Etapa</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= Team Lead / Process Supervisor</div><div class="gap-row">Garantir marcos, critérios e outputs. <strong>Foco: Controle.</strong></div></div>
+        <div class="gap-panel" style="border-left-color:var(--clients)"><div class="gap-title" style="color:var(--clients)">🔨 Time Operacional</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= Operators / Specialists / ICs</div><div class="gap-row">Executar atividades, tarefas e registros de desfecho. <strong>Foco: Execução.</strong></div></div>
+        <div class="gap-panel" style="border-left-color:var(--process)"><div class="gap-title" style="color:var(--process)">📋 Dono do Processo</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= Process Owner</div><div class="gap-row">Manter Modelo de Referência, critérios e melhoria contínua. <strong>Foco: Governança.</strong></div></div>
+        <div class="gap-panel" style="border-left-color:var(--innovation)"><div class="gap-title" style="color:var(--innovation)">🚀 Gestor de Melhoria</div><div class="gap-row" style="color:var(--projects);font-size:11px;font-weight:700;margin-bottom:4px">= PMO / Strategy Ops / Business Operations</div><div class="gap-row">Transformar gaps em iniciativas e medir impacto. <strong>Foco: Evolução interna.</strong></div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-block">
+      <div class="section-label">Setores ainda não modelados</div>
+      <div class="gap-col">
+        <div class="gap-panel" style="border-left-color:var(--strategy)"><div class="gap-title" style="color:var(--strategy)">🎯 Strategy Office</div><div class="gap-row"><strong>Quando criar:</strong> OKRs precisarem de governança recorrente.</div><div class="gap-row"><strong>Primeira lista:</strong> OKRs por Ciclo</div></div>
+        <div class="gap-panel" style="border-left-color:var(--projects)"><div class="gap-title" style="color:var(--projects)">📊 PMO / Portfolio</div><div class="gap-row"><strong>Quando criar:</strong> Múltiplos projetos internos concorrendo por prioridade.</div><div class="gap-row"><strong>Primeira lista:</strong> Projetos de Otimização Interna</div></div>
+        <div class="gap-panel" style="border-left-color:var(--people)"><div class="gap-title" style="color:var(--people)">👥 People & Culture</div><div class="gap-row"><strong>Quando criar:</strong> Delegação, onboarding e responsabilidades virarem gargalo.</div><div class="gap-row"><strong>Primeira lista:</strong> Cargos e Responsabilidades</div></div>
+        <div class="gap-panel" style="border-left-color:var(--commercial)"><div class="gap-title" style="color:var(--commercial)">💰 RevOps</div><div class="gap-row"><strong>Quando criar:</strong> Marketing, Comercial e Clientes precisarem de funil integrado.</div><div class="gap-row"><strong>Primeira lista:</strong> Receita e Pipeline Integrado</div></div>
+        <div class="gap-panel" style="border-left-color:var(--process)"><div class="gap-title" style="color:var(--process)">⚙️ Process Excellence</div><div class="gap-row"><strong>Quando criar:</strong> Modelos de referência começarem a mudar por aprendizado de campo.</div><div class="gap-row"><strong>Primeira lista:</strong> Backlog de Melhorias de Processo</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+const PAGES_META = [
+  { title:'SpinFlow Hub',         badge:'Menu'   },
+  { title:'Conceito Estratégico', badge:'1 de 5' },
+  { title:'Mapa Tech',            badge:'2 de 5' },
+  { title:'Camada Estratégica',   badge:'3 de 5' },
+  { title:'Diagnóstico',          badge:'4 de 5' },
+  { title:'Termos e Cargos',      badge:'5 de 5' },
+];
+let current = 0;
+const TOTAL = PAGES_META.length;
+
+function goToPage(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  document.getElementById('page-' + current).classList.remove('active');
+  current = idx;
+  const pg = document.getElementById('page-' + current);
+  pg.classList.add('active');
+  pg.scrollTop = 0;
+  updateNav();
+}
+function navBack() { current > 0 && goToPage(current - 1); }
+function navNext() { current < TOTAL - 1 && goToPage(current + 1); }
+
+function updateNav() {
+  const m = PAGES_META[current];
+  document.getElementById('navTitle').textContent = m.title;
+  document.getElementById('navBadge').textContent = m.badge;
+  document.getElementById('btnBack').classList.toggle('hidden', current === 0);
+  document.getElementById('btnNext').classList.toggle('hidden', current === 0 || current === TOTAL - 1);
+  const pct = current === 0 ? 0 : (current / (TOTAL - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ── MAPA TECH DATA ──
+const SECTOR_COLORS = {
+  strategy:'#c8d0e4', marketing:'#f4c842', commercial:'#e84c3d',
+  clients:'#48bb78', projects:'#4b9ef0', ops:'#ff7043',
+  process:'#a855f7', innovation:'#22d3ee', inbox:'#ff7043'
+};
+const STATUS_COLORS = ['#68718d','#f59e0b','#4b9ef0','#48bb78','#e84c3d','#a855f7'];
+
+const workspace = [
+  { id:'estrategia', name:'Estratégia Empresarial', color:SECTOR_COLORS.strategy, layer:'Direção',
+    lists:[
+      { id:'empresa', name:'Descrição da Empresa', entity:'Documento institucional',
+        goal:'Formalizar missão, visão, valores, posicionamento, proposta de valor e limites de atuação.',
+        fields:['Missão','Visão','Valores','ICP principal','Oferta central','Dono','Última revisão'],
+        relationships:['OKRs','Planos setoriais','Branding','Produtos e Serviços'],
+        statusFlow:['Rascunho','Em revisão','Aprovado','Em revisão estratégica'],
+        automations:['Revisão trimestral cria tarefa para atualizar identidade se OKRs mudarem.'] },
+      { id:'okrs', name:'OKRs por Ciclo', entity:'Objetivo estratégico',
+        goal:'Traduzir direção em objetivos trimestrais com resultados-chave mensuráveis.',
+        fields:['Ciclo','Objetivo','KR','Baseline','Meta','Score','Setor responsável'],
+        relationships:['KPIs','Projetos de Otimização Interna','Dashboards'],
+        statusFlow:['Planejado','Ativo','Em risco','Concluído','Arquivado'],
+        automations:['KR em risco aciona revisão mensal e sugere iniciativa de melhoria.'] },
+      { id:'planos', name:'Planos Setoriais', entity:'Plano de setor',
+        goal:'Desdobrar estratégia para Produto, Marketing, Comercial, Operacional, Pessoas e Tecnologia.',
+        fields:['Setor','Objetivo do setor','Capacidades','Gaps','Iniciativas','Prioridade'],
+        relationships:['OKRs','Processos','Projetos internos'],
+        statusFlow:['Backlog','Em desenho','Aprovado','Em execução','Revisado'],
+        automations:['Plano aprovado cria iniciativas vinculadas ao setor.'] }
+    ]},
+  { id:'marketing', name:'Marketing', color:SECTOR_COLORS.marketing, layer:'Aquisição',
+    lists:[
+      { id:'branding', name:'Branding', entity:'Ativo de marca',
+        goal:'Centralizar linguagem, identidade, posicionamento, provas e diretrizes da comunicação.',
+        fields:['Tipo de ativo','Canal','Status de aprovação','Responsável','Uso permitido'],
+        relationships:['Descrição da Empresa','Campanhas','Materiais Comerciais'],
+        statusFlow:['Ideia','Produzindo','Revisão','Aprovado','Publicado'],
+        automations:['Ativo aprovado notifica Hermes e atualiza materiais reutilizáveis.'] },
+      { id:'campanhas', name:'Campanhas e Conteúdo', entity:'Campanha',
+        goal:'Organizar aquisição, conteúdo, experimentos e ativos que geram leads para o Comercial.',
+        fields:['Canal','ICP','Oferta','CTA','Budget','Leads gerados','CAC'],
+        relationships:['Leads','Branding','KPIs de Marketing'],
+        statusFlow:['Briefing','Produção','Ativa','Pausada','Encerrada'],
+        automations:['Lead novo com origem campanha cria relacionamento com funil comercial.'] }
+    ]},
+  { id:'comercial', name:'Comercial', color:SECTOR_COLORS.commercial, layer:'Receita',
+    lists:[
+      { id:'leads', name:'Processos de Vendas / Leads', entity:'Instância do Processo Comercial',
+        goal:'Acompanhar cada lead do primeiro sinal até fechamento, perda, pausa ou manutenção.',
+        fields:['Empresa','Contato-chave','Origem','ICP Fit','Valor estimado','Fase SpinFlow','Próxima ação'],
+        relationships:['Campanhas','Reuniões','Atividades Comerciais','Clientes','Contratos'],
+        statusFlow:['Oportunidade','Qualificação','Agendar reunião','Reunião agendada','Negócio fechado','Perdido'],
+        automations:['Lead ganho cria Cliente, Contrato e Handoff para Operacional.'] },
+      { id:'reunioes-com', name:'Reuniões Comerciais', entity:'Compromisso comercial',
+        goal:'Registrar reuniões, diagnósticos, apresentações e decisões com contexto ligado ao lead.',
+        fields:['Lead','Tipo','Data','Participantes','Resultado','Follow-up'],
+        relationships:['Leads','Agenda','Atividades Comerciais'],
+        statusFlow:['Agendada','Realizada','Follow-up','Concluída','Cancelada'],
+        automations:['Reunião realizada cria follow-up se houver próxima ação.'] },
+      { id:'atividades-com', name:'Atividades Comerciais', entity:'Tarefa comercial',
+        goal:'Capturar ligações, DMs, e-mails, visitas, follow-ups e tentativas com histórico limpo.',
+        fields:['Lead','Canal','Tentativa','Desfecho','Data','Responsável'],
+        relationships:['Leads','Reuniões Comerciais'],
+        statusFlow:['A fazer','Em execução','Concluída com sucesso','Concluída sem sucesso','Cancelada'],
+        automations:['Tarefa sem sucesso cria próxima tentativa dentro do loop da Atividade.'] }
+    ]},
+  { id:'clientes', name:'Clientes', color:SECTOR_COLORS.clients, layer:'Relacionamento',
+    lists:[
+      { id:'crm', name:'CRM de Clientes', entity:'Conta cliente',
+        goal:'Manter visão consolidada de clientes, saúde, pacote, histórico, oportunidades e risco.',
+        fields:['Pacote','MRR','Health Score','Responsável','Data de início','Risco','Próxima revisão'],
+        relationships:['Contratos','Financeiro','Projetos de Clientes','Comercial'],
+        statusFlow:['Novo','Ativo','Atenção','Expansão','Churn','Arquivado'],
+        automations:['Health Score baixo cria tarefa de acompanhamento estratégico.'] },
+      { id:'contratos', name:'Contratos', entity:'Contrato',
+        goal:'Controlar ciclo contratual, vigência, renovação, escopo e documentos assinados.',
+        fields:['Cliente','Valor','Vigência','Escopo','Assinatura','Renovação','Arquivo'],
+        relationships:['CRM','Financeiro','Projetos'],
+        statusFlow:['Rascunho','Enviado','Assinado','Ativo','Renovação','Encerrado'],
+        automations:['Contrato assinado cria gatilho de onboarding e cobrança inicial.'] }
+    ]},
+  { id:'projetos', name:'Gestão de Projetos', color:SECTOR_COLORS.projects, layer:'Entrega',
+    lists:[
+      { id:'proj-clientes', name:'Projetos de Clientes', entity:'Projeto de entrega',
+        goal:'Gerenciar entregas finitas para clientes sem confundir projeto com processo recorrente.',
+        fields:['Cliente','Pacote','Escopo','Fase','Prazo','Risco','Definition of Done'],
+        relationships:['CRM','Contratos','Operacional','Entregáveis'],
+        statusFlow:['Preparação','Iniciação','Execução','Finalização','Manutenção'],
+        automations:['Fase finalizada atualiza status do cliente e cria handoff de manutenção.'] },
+      { id:'otimizacao', name:'Projetos de Otimização Interna', entity:'Iniciativa interna',
+        goal:'Transformar gaps estratégicos, melhorias de processo e novas tecnologias em projetos executáveis.',
+        fields:['OKR ligado','Setor','Impacto','Esforço','Dono','Risco','Métrica de sucesso'],
+        relationships:['OKRs','KPIs','Processos','Inovação'],
+        statusFlow:['Diagnóstico','Planejamento','Execução','Validação','Incorporação'],
+        automations:['Iniciativa validada cria atualização no Modelo de Referência ou SOP.'] }
+    ]},
+  { id:'operacional', name:'Operacional', color:SECTOR_COLORS.ops, layer:'Produção',
+    lists:[
+      { id:'entregaveis', name:'Catálogo de Entregáveis', entity:'SOP / entregável',
+        goal:'Padronizar Google Meu Negócio, WhatsApp Business, Instagram, site, landing page e agenda.',
+        fields:['Tipo','Pacote','SLA','Checklist','Critério de aceite','Template'],
+        relationships:['Projetos de Clientes','Processo Operacional','Base de Conhecimento'],
+        statusFlow:['Template','Em uso','Em revisão','Validado','Descontinuado'],
+        automations:['Novo projeto cria tarefas conforme entregáveis do pacote vendido.'] },
+      { id:'proc-op', name:'Processo Operacional', entity:'Instância de prestação de serviço',
+        goal:'Receber handoff comercial e executar onboarding, quick win, entregas, encerramento e manutenção.',
+        fields:['Cliente','Pacote','Fase SpinFlow','Responsável','Bloqueios','Output esperado'],
+        relationships:['Comercial','Projetos','Entregáveis','Clientes'],
+        statusFlow:['Preparação','Iniciação','Execução','Finalização','Manutenção'],
+        automations:['Handoff aprovado cria fase de preparação operacional.'] }
+    ]},
+  { id:'processos', name:'Processos', color:SECTOR_COLORS.process, layer:'Método',
+    lists:[
+      { id:'mapeamento', name:'Mapeamento de Processos', entity:'Modelo de Referência',
+        goal:'Documentar processos recorrentes em Empresa, Setor, Processo, Fase, Etapa, Atividade e Tarefa.',
+        fields:['Setor','Versão','Dono','Definition of Operation','Fase','Validação em campo'],
+        relationships:['Projetos de Otimização','Agents','SOPs','ClickUp'],
+        statusFlow:['Identificado','Mapeando','Em validação','Operacional','Em revisão'],
+        automations:['Mudança validada abre tarefa de atualizar AGENTS, MOC e templates.'] }
+    ]},
+  { id:'agents', name:'Spin Agents', color:SECTOR_COLORS.innovation, layer:'Automação',
+    lists:[
+      { id:'mapa-agents', name:'Mapa Agent × Processo', entity:'Responsabilidade de agent',
+        goal:'Definir que agents operam quais fases, etapas, atividades e decisões.',
+        fields:['Agent','Setor','Processo','Atividade','Permissão','Skill requerida'],
+        relationships:['Processos','Skills','Automações','ClickUp'],
+        statusFlow:['Proposto','Em desenho','Testando','Ativo','Revisar'],
+        automations:['Nova atividade mapeada sugere skill ou prompt operacional.'] }
+    ]},
+  { id:'mesa', name:'Mesa de Trabalho', color:SECTOR_COLORS.inbox, layer:'Inbox',
+    lists:[
+      { id:'inbox', name:'Inbox / Lista Livre', entity:'Item capturado',
+        goal:'Receber tarefas e ideias ainda sem contexto, para triagem e classificação semanal.',
+        fields:['Origem','Tipo','Urgência','Destino sugerido','Responsável'],
+        relationships:['Todas as listas após triagem'],
+        statusFlow:['Inbox','A fazer','Em andamento','Concluída','Descartada'],
+        automations:['Item parado por 7 dias cria lembrete de triagem.'] }
+    ]}
+];
+
+function buildSidebar(filter) {
+  const sidebar = document.getElementById('mapaSidebar');
+  const norm = (filter || '').trim().toLowerCase();
+  sidebar.innerHTML = '';
+
+  workspace.forEach(folder => {
+    const lists = folder.lists.filter(item => {
+      if (!norm) return true;
+      return [folder.name,item.name,item.entity,item.goal,...item.fields,...item.relationships]
+        .join(' ').toLowerCase().includes(norm);
+    });
+    if (norm && lists.length === 0) return;
+
+    const grp = document.createElement('div');
+    grp.className = 'folder-group';
+
+    const fb = document.createElement('button');
+    fb.className = 'folder-btn';
+    fb.style.borderLeftColor = folder.color;
+    fb.innerHTML = `<span class="f-dot" style="background:${folder.color}"></span><span class="f-name">${folder.name}</span>`;
+    grp.appendChild(fb);
+
+    const items = document.createElement('div');
+    items.className = 'folder-items';
+
+    lists.forEach(item => {
+      const lb = document.createElement('button');
+      lb.className = 'list-btn';
+      lb.innerHTML = `<span class="f-dot" style="background:${folder.color};opacity:.7"></span>${item.name}`;
+      lb.onclick = () => selectList(folder, item, lb);
+      items.appendChild(lb);
+    });
+
+    grp.appendChild(items);
+    sidebar.appendChild(grp);
+  });
+}
+
+function selectList(folder, item, btn) {
+  document.querySelectorAll('.list-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = '';
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.background = folder.color + '1a';
+  }
+
+  document.getElementById('mapaDetail').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-eyebrow" style="color:${folder.color}">${folder.name} · ${folder.layer}</div>
+      <div class="detail-title">${item.name}</div>
+      <div class="detail-goal">${item.goal}</div>
+      <div class="entity-chip" style="color:${folder.color};border-color:${folder.color}">${item.entity}</div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-block-label">Fluxo de Status</div>
+      <div class="status-row">
+        ${item.statusFlow.map((s,i) => `
+          <span class="s-pill" style="color:${STATUS_COLORS[i % STATUS_COLORS.length]}">${s}</span>
+          ${i < item.statusFlow.length-1 ? '<span class="s-sep">→</span>' : ''}
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-block-label">Custom Fields Principais</div>
+      <div class="pill-row">
+        ${item.fields.map(f => `<span class="tag" style="color:${folder.color};border-color:${folder.color}44">${f}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-block-label">Relacionamentos</div>
+      <div class="pill-row">
+        ${item.relationships.map(r => `<span class="tag" style="color:var(--muted);border-color:var(--line)">${r}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-block-label">Automações Sugeridas</div>
+      ${item.automations.map(a => `<div style="font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--line-soft)"><span style="color:var(--amber)">⚡</span> ${a}</div>`).join('')}
+    </div>
+  `;
+}
+
+function filterMapa(v) { buildSidebar(v); }
+
+// init
+buildSidebar();
+updateNav();
+setTimeout(() => {
+  const fb = document.querySelector('.list-btn');
+  if (fb) selectList(workspace[0], workspace[0].lists[0], fb);
+}, 80);
+</script>
+</body>
+</html>
