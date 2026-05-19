@@ -253,7 +253,18 @@ h3.section-title {
   grid-column: 1 / -1;
 }
 
-/* ── Fonte ── */
+/* ── Cabeçalho: link de volta ── */
+header .back {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: .8rem;
+  color: #aabfcf;
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+header .back:hover { color: #fff; }
+
+/* ── Rodapé ── */
 footer {
   background: var(--navy);
   color: #aabfcf;
@@ -275,6 +286,7 @@ footer strong { color: #fff; }
 <body>
 
 <header>
+  <a class="back" href="../../index.html">&#8592; Portfólio</a>
   <h1>TecnoFácil 1.0 — Visualização SpinFlow</h1>
   <div class="sub">Macro-visualização da estrutura empresarial e metodológica</div>
 </header>
@@ -435,7 +447,7 @@ footer strong { color: #fff; }
 </main>
 
 <footer>
-  <strong>Fonte:</strong> documentos em <code>22 - TecnoFácil / 22.1 - SpinFlow TecnoFácil/</code> — gerado em 2026-05-19 como parte da Leva 1 do roadmap de implementação SpinFlow.
+  TecnoFácil 1.0 &middot; Visualização SpinFlow &middot; 2026-05-19
 </footer>
 
 </body>
