@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TecnoFácil 1.0 — Índice SpinFlow</title>
+<style>
+:root {
+  --ink:#18212b; --muted:#64717f; --line:#d8dee7; --paper:#ffffff; --page:#f6f8fb;
+  --navy:#12314b; --teal:#28796f; --gold:#b88a1c; --red:#ba3d32; --violet:#6d5b98;
+  --prep:#e7eef6; --prep-b:#6689a8; --init:#fff1cf; --init-b:#b88a1c;
+  --exec:#e1edf8; --exec-b:#2e6f9f; --final:#e0f0ea; --final-b:#28796f;
+  --maint:#eee8f6; --maint-b:#6d5b98;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--page);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── Cabeçalho ── */
+header {
+  background: var(--navy);
+  border-bottom: 5px solid var(--gold);
+  padding: 24px 40px 20px;
+  color: #fff;
+}
+header h1 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+header .sub {
+  font-size: .9rem;
+  color: #aabfcf;
+  margin-top: 4px;
+}
+
+/* ── Layout central ── */
+main {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+/* ── Hero ── */
+.hero {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  margin-bottom: 36px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+}
+.hero h2 {
+  font-size: 1.75rem;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.hero p {
+  color: var(--muted);
+  font-size: .95rem;
+  max-width: 560px;
+}
+.status-block {
+  background: var(--init);
+  border: 1px solid var(--init-b);
+  border-radius: 6px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 160px;
+}
+.status-block .label {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.status-block .value {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.status-block .date {
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: 6px;
+  display: block;
+}
+
+/* ── Métricas ── */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.metric-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px 12px;
+  text-align: center;
+}
+.metric-card .num {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+  display: block;
+}
+.metric-card .lbl {
+  font-size: .75rem;
+  color: var(--muted);
+  margin-top: 5px;
+  display: block;
+}
+
+/* ── Seção de páginas ── */
+h3.section-title {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pages-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.page-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 22px 24px;
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  align-items: start;
+  transition: border-color .15s, box-shadow .15s;
+}
+.page-card:hover {
+  border-color: var(--teal);
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+.page-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.page-card .pg-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.page-card .pg-desc {
+  font-size: .85rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.page-card .pg-tag {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* variantes de cor por página */
+.c-empresa   { background: var(--exec);  color: var(--exec-b); }
+.c-arq       { background: var(--prep);  color: var(--prep-b); }
+.c-comercial { background: var(--init);  color: var(--init-b); }
+.c-operac    { background: var(--final); color: var(--final-b);}
+.c-pacotes   { background: var(--maint); color: var(--maint-b);}
+.c-entregav  { background: var(--exec);  color: var(--exec-b); }
+.c-handoff   { background: var(--prep);  color: var(--prep-b); }
+.c-roadmap   { background: var(--init);  color: var(--init-b); }
+
+/* ── Como navegar ── */
+.nav-guide {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 28px 32px;
+  margin-bottom: 40px;
+}
+.nav-guide h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 18px;
+}
+.nav-paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.nav-path h4 {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.nav-path ol {
+  padding-left: 18px;
+  font-size: .875rem;
+  color: var(--ink);
+}
+.nav-path ol li {
+  margin-bottom: 5px;
+}
+.nav-path ol li a {
+  color: var(--teal);
+  text-decoration: none;
+}
+.nav-path ol li a:hover {
+  text-decoration: underline;
+}
+.nav-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: .82rem;
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+
+/* ── Fonte ── */
+footer {
+  background: var(--navy);
+  color: #aabfcf;
+  padding: 20px 40px;
+  font-size: .8rem;
+}
+footer strong { color: #fff; }
+
+@media (max-width: 760px) {
+  header { padding: 18px 20px 14px; }
+  main { padding: 24px 16px 40px; }
+  .hero { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(3, 1fr); }
+  .pages-grid { grid-template-columns: 1fr; }
+  .nav-paths { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TecnoFácil 1.0 — Visualização SpinFlow</h1>
+  <div class="sub">Macro-visualização da estrutura empresarial e metodológica</div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div>
+      <h2>TecnoFácil 1.0<br>Aplicação da Metodologia SpinFlow</h2>
+      <p>Documentação visual completa da estrutura operacional da TecnoFácil: identidade da empresa, arquitetura SpinFlow, setores comercial e operacional, pacotes, entregáveis, handoff e roadmap de maturidade.</p>
+    </div>
+    <div class="status-block">
+      <span class="label">Status</span>
+      <span class="value">Leva 1 — Draft</span>
+      <span class="date">2026-05-19</span>
+    </div>
+  </div>
+
+  <!-- Métricas globais -->
+  <h3 class="section-title">Dimensionamento do sistema</h3>
+  <div class="metrics">
+    <div class="metric-card">
+      <span class="num">2</span>
+      <span class="lbl">Setores</span>
+    </div>
+    <div class="metric-card">
+      <span class="num">3</span>
+      <span class="lbl">Processos</span>
+    </div>
+    <div class="metric-card">
+      <span class="num">15</span>
+      <span class="lbl">Fases</span>
+    </div>
+    <div class="metric-card">
+      <span class="num">~50</span>
+      <span class="lbl">Etapas</span>
+    </div>
+    <div class="metric-card">
+      <span class="num">6</span>
+      <span class="lbl">Entregáveis</span>
+    </div>
+    <div class="metric-card">
+      <span class="num">3</span>
+      <span class="lbl">Pacotes</span>
+    </div>
+  </div>
+
+  <!-- Cards de páginas -->
+  <h3 class="section-title">Páginas desta visualização</h3>
+  <div class="pages-grid">
+
+    <a class="page-card" href="01-tecnofacil-empresa.html">
+      <div class="page-num c-empresa">01</div>
+      <div>
+        <div class="pg-title">A Empresa</div>
+        <div class="pg-desc">Identidade, história, problema resolvido, público-alvo, catálogo de serviços, modelo de negócio e diferenciais da TecnoFácil.</div>
+        <span class="pg-tag c-empresa">Empresa</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="02-arquitetura-spinflow.html">
+      <div class="page-num c-arq">02</div>
+      <div>
+        <div class="pg-title">Arquitetura SpinFlow</div>
+        <div class="pg-desc">Mapa hierárquico completo, diagrama de convergência dos funis, premissas de modelagem, DOO e escopo da Leva 1.</div>
+        <span class="pg-tag c-arq">Arquitetura</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="03-setor-comercial.html">
+      <div class="page-num c-comercial">03</div>
+      <div>
+        <div class="pg-title">Setor Comercial</div>
+        <div class="pg-desc">Dois funis lado a lado (Presencial e Redes Sociais), ICP, roteamento por origem de lead e outputs que alimentam o Operacional.</div>
+        <span class="pg-tag c-comercial">Comercial</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="04-setor-operacional.html">
+      <div class="page-num c-operac">04</div>
+      <div>
+        <div class="pg-title">Setor Operacional</div>
+        <div class="pg-desc">Processo de prestação de serviços, Gantt por fase, Quick Win 48h e detalhe de cada etapa com critério de saída e output.</div>
+        <span class="pg-tag c-operac">Operacional</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="05-pacotes-escopo-slas.html">
+      <div class="page-num c-pacotes">05</div>
+      <div>
+        <div class="pg-title">Pacotes, Escopo e SLAs</div>
+        <div class="pg-desc">Três pacotes (Básico, Pro, Premium), matriz de escopo por entregável, SLAs de entrega e cadências de manutenção.</div>
+        <span class="pg-tag c-pacotes">Pacotes</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="06-catalogo-entregaveis.html">
+      <div class="page-num c-entregav">06</div>
+      <div>
+        <div class="pg-title">Catálogo de Entregáveis</div>
+        <div class="pg-desc">Seis fichas técnicas completas: checklist, SOP numerado, critérios de aceitação, output esperado, variações por pacote e ferramentas.</div>
+        <span class="pg-tag c-entregav">Entregáveis</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="07-fluxo-outputs-handoff.html">
+      <div class="page-num c-handoff">07</div>
+      <div>
+        <div class="pg-title">Outputs e Handoff</div>
+        <div class="pg-desc">Fluxo completo de outputs do Comercial ao Operacional, os 6 artefatos de handoff, outputs operacionais e loop de feedback.</div>
+        <span class="pg-tag c-handoff">Handoff</span>
+      </div>
+    </a>
+
+    <a class="page-card" href="08-roadmap-maturidade.html">
+      <div class="page-num c-roadmap">08</div>
+      <div>
+        <div class="pg-title">Roadmap de Maturidade</div>
+        <div class="pg-desc">Quatro levas de implementação, DOO da Leva 1, perguntas abertas, matriz de riscos e próximos passos definidos.</div>
+        <span class="pg-tag c-roadmap">Roadmap</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Como navegar -->
+  <div class="nav-guide">
+    <h3>Como navegar este material</h3>
+    <div class="nav-paths">
+      <div class="nav-path">
+        <h4>Leitura sequencial recomendada</h4>
+        <ol>
+          <li><a href="01-tecnofacil-empresa.html">A Empresa</a> — contexto e identidade</li>
+          <li><a href="02-arquitetura-spinflow.html">Arquitetura SpinFlow</a> — mapa geral</li>
+          <li><a href="03-setor-comercial.html">Setor Comercial</a> — funis e ICP</li>
+          <li><a href="07-fluxo-outputs-handoff.html">Outputs e Handoff</a> — transição</li>
+          <li><a href="04-setor-operacional.html">Setor Operacional</a> — execução</li>
+          <li><a href="05-pacotes-escopo-slas.html">Pacotes e SLAs</a> — oferta</li>
+          <li><a href="06-catalogo-entregaveis.html">Catálogo de Entregáveis</a> — fichas técnicas</li>
+          <li><a href="08-roadmap-maturidade.html">Roadmap</a> — próximos passos</li>
+        </ol>
+      </div>
+      <div class="nav-path">
+        <h4>Acesso temático</h4>
+        <ol>
+          <li><strong>Visão comercial:</strong> páginas 01 → 03 → 05</li>
+          <li><strong>Visão operacional:</strong> páginas 04 → 06 → 05</li>
+          <li><strong>Fluxo ponta a ponta:</strong> páginas 02 → 07</li>
+          <li><strong>Planejamento e governança:</strong> páginas 02 → 08</li>
+          <li><strong>Auditoria de entregável:</strong> página 06 diretamente</li>
+        </ol>
+      </div>
+      <p class="nav-note">Cada página é autossuficiente — pode ser aberta diretamente. Todas têm links de navegação no rodapé (anterior / índice / próxima). O material está em status <strong>Draft (Leva 1)</strong>: perguntas abertas e lacunas estão documentadas na página 08.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Fonte:</strong> documentos em <code>22 - TecnoFácil / 22.1 - SpinFlow TecnoFácil/</code> — gerado em 2026-05-19 como parte da Leva 1 do roadmap de implementação SpinFlow.
+</footer>
+
+</body>
+</html>

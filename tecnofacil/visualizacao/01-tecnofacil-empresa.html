@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TecnoFácil — A Empresa</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#18212b;--muted:#64717f;--line:#d8dee7;--paper:#ffffff;--page:#f6f8fb;
+    --navy:#12314b;--teal:#28796f;--gold:#b88a1c;--red:#ba3d32;--violet:#6d5b98;
+    --prep:#e7eef6;--prep-b:#6689a8;--init:#fff1cf;--init-b:#b88a1c;
+    --exec:#e1edf8;--exec-b:#2e6f9f;--final:#e0f0ea;--final-b:#28796f;--maint:#eee8f6;--maint-b:#6d5b98;
+  }
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--page);color:var(--ink);line-height:1.55;font-size:14px}
+  a{color:var(--exec-b);text-decoration:none}a:hover{text-decoration:underline}
+
+  /* Header */
+  header{background:var(--navy);color:#fff;padding:28px 36px 24px;border-bottom:5px solid var(--gold)}
+  .kicker{color:#b8c9d8;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+  header h1{font-size:26px;font-weight:700;margin-bottom:4px}
+  header p.sub{color:#ccd6e0;font-size:13px}
+
+  /* Nav */
+  nav.breadcrumb{background:#fff;border-bottom:1px solid var(--line);padding:10px 36px;font-size:12px;color:var(--muted)}
+  nav.breadcrumb a{color:var(--exec-b)}
+  nav.page-nav{background:#fff;border-top:1px solid var(--line);padding:14px 36px;display:flex;justify-content:space-between;font-size:13px;margin-top:48px}
+  nav.page-nav a{color:var(--exec-b);font-weight:600}
+
+  /* Layout */
+  .container{max-width:980px;margin:0 auto;padding:36px 24px}
+  section{margin-bottom:48px}
+  h2{font-size:18px;font-weight:700;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:20px}
+  h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px}
+
+  /* Cards */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px 24px;margin-bottom:16px}
+  .card-grid{display:grid;gap:16px}
+  .card-grid.cols2{grid-template-columns:1fr 1fr}
+  .card-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+  .card-grid.cols4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+  /* Callout */
+  .callout{border-left:4px solid var(--gold);background:var(--init);padding:16px 20px;border-radius:0 6px 6px 0;margin-bottom:20px}
+  .callout.green{border-color:var(--teal);background:var(--final)}
+  .callout.navy{border-color:var(--navy);background:var(--prep)}
+  .callout blockquote{font-size:15px;font-style:italic;color:var(--navy);font-weight:600}
+
+  /* Tabela */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+  th{background:var(--navy);color:#fff;padding:9px 12px;text-align:left;font-size:12px;font-weight:600}
+  td{padding:9px 12px;border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#f9fbfd}
+
+  /* Pílulas */
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .pill{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--prep);border:1px solid var(--prep-b);color:var(--navy)}
+  .pill.gold{background:var(--init);border-color:var(--init-b)}
+  .pill.green{background:var(--final);border-color:var(--final-b)}
+  .pill.violet{background:var(--maint);border-color:var(--maint-b)}
+
+  /* Lista */
+  ul.items{padding-left:18px;margin-top:8px}
+  ul.items li{margin-bottom:5px;color:var(--ink)}
+
+  /* Dois colunas */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+  /* Pacote card */
+  .pack{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px;text-align:center}
+  .pack.basic{border-top:4px solid var(--prep-b)}
+  .pack.pro{border-top:4px solid var(--gold)}
+  .pack.premium{border-top:4px solid var(--teal)}
+  .pack .pack-name{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
+  .pack .pack-tagline{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .pack ul{list-style:none;text-align:left;font-size:13px}
+  .pack ul li{padding:4px 0;border-bottom:1px solid var(--line)}
+  .pack ul li::before{content:"•  ";color:var(--gold)}
+
+  /* Serviços grid */
+  .svc-card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+  .svc-card h3{font-size:13px;font-weight:700;color:var(--exec-b);margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+
+  /* Footer */
+  footer{background:#fff;border-top:1px solid var(--line);padding:14px 36px;font-size:11px;color:var(--muted);margin-top:0}
+
+  @media(max-width:760px){
+    .card-grid.cols2,.card-grid.cols3,.card-grid.cols4,.two-col,.three-col{grid-template-columns:1fr}
+    header{padding:20px 18px 16px}
+    nav.breadcrumb,nav.page-nav{padding:10px 18px}
+    .container{padding:24px 16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">TecnoFácil 1.0 — Demonstração Visual</div>
+  <h1>A Empresa</h1>
+  <p class="sub">Identidade, proposta de valor, público-alvo e modelo de negócio da TecnoFácil</p>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Inicio</a> &rsaquo; A Empresa
+</nav>
+
+<div class="container">
+
+  <!-- 1. Proposta de valor -->
+  <section>
+    <h2>1. Proposta de Valor Central</h2>
+    <div class="callout">
+      <blockquote>Tornar a tecnologia e o marketing digital simples, acessíveis e eficientes para pequenos negócios.</blockquote>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <h3>Missão</h3>
+        <p>Simplificar o uso da tecnologia e do marketing digital para pequenos negócios, ajudando empreendedores a crescer de forma organizada e sustentável.</p>
+      </div>
+      <div class="card">
+        <h3>Visão</h3>
+        <p>Ser referência regional em consultoria e implementação de soluções digitais simples e eficientes para pequenos negócios.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Origem -->
+  <section>
+    <h2>2. Origem e Problema de Mercado</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Como surgiu</h3>
+        <p>Nasceu da experiência prática de Rodrigo Tabosa trabalhando diretamente com pequenos negócios locais — otimização de perfis no Google, criação de landing pages, organização de perfis no Instagram, sistemas simples de gestão e automações. O padrão repetido: pequenos negócios precisam de soluções digitais simples, acessíveis e práticas.</p>
+      </div>
+      <div class="card">
+        <h3>Problema de mercado</h3>
+        <ul class="items">
+          <li>Ausência de presença digital estruturada</li>
+          <li>Marketing online improvisado (só boca a boca)</li>
+          <li>Falta de uso de ferramentas tecnológicas</li>
+          <li>Processos desorganizados e sem automação</li>
+          <li>Tarefas repetitivas feitas manualmente</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Público-alvo -->
+  <section>
+    <h2>3. Público-Alvo</h2>
+    <div class="three-col">
+      <div class="card">
+        <h3>Pequenos negócios locais</h3>
+        <ul class="items">
+          <li>Restaurantes e lanchonetes</li>
+          <li>Cafeterias e padarias artesanais</li>
+          <li>Pousadas e hostels</li>
+          <li>Clínicas e consultórios</li>
+          <li>Academias e estúdios</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Profissionais autônomos</h3>
+        <ul class="items">
+          <li>Dentistas e médicos</li>
+          <li>Psicólogos e fisioterapeutas</li>
+          <li>Advogados e contadores</li>
+          <li>Arquitetos e designers</li>
+          <li>Demais profissionais liberais</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Pequenos prestadores</h3>
+        <ul class="items">
+          <li>Oficinas (mecânica, marcenaria)</li>
+          <li>Técnicos (refrigeração, elétrica)</li>
+          <li>Salões e barbearias</li>
+          <li>Esmalterias</li>
+          <li>Serviços de turismo local</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout navy" style="margin-top:20px">
+      <p><strong>Denominador comum do ICP:</strong> negócio local operando, pelo menos um canal de atendimento, decisor acessível e capacidade de investir no pacote mínimo.</p>
+    </div>
+  </section>
+
+  <!-- 4. Catalogo de servicos -->
+  <section>
+    <h2>4. Catálogo de Serviços</h2>
+    <div class="card-grid cols4">
+      <div class="svc-card">
+        <h3>Presenca Digital</h3>
+        <ul class="items">
+          <li>Google Meu Negócio</li>
+          <li>Perfil Instagram</li>
+          <li>WhatsApp Business</li>
+          <li>Links de contato</li>
+          <li>Plaquinhas QR Code</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <h3>Marketing Digital</h3>
+        <ul class="items">
+          <li>Landing pages</li>
+          <li>Estratégias de captação</li>
+          <li>Estruturação de campanhas</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <h3>Organizacao Digital</h3>
+        <ul class="items">
+          <li>Sistemas simples de gestão</li>
+          <li>Organização de tarefas</li>
+          <li>Agenda inteligente integrada</li>
+          <li>Site simples</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <h3>Automacao</h3>
+        <ul class="items">
+          <li>Respostas automáticas</li>
+          <li>Integração entre apps</li>
+          <li>Redução de tarefas manuais</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Modelo de negocio / pacotes -->
+  <section>
+    <h2>5. Modelo de Negócio — Pacotes</h2>
+    <p style="margin-bottom:20px;color:var(--muted)">A TecnoFácil opera com combinação de consultoria, implementação e pacotes de serviços recorrentes. Três pacotes padrão:</p>
+    <div class="three-col">
+      <div class="pack basic">
+        <div class="pack-name">Básico</div>
+        <div class="pack-tagline">Entrada e presença mínima</div>
+        <ul>
+          <li>Google Meu Negócio</li>
+          <li>WhatsApp Business</li>
+          <li>Instagram (opcional add-on)</li>
+          <li>Manutencao trimestral</li>
+        </ul>
+      </div>
+      <div class="pack pro">
+        <div class="pack-name">Pro</div>
+        <div class="pack-tagline">Presença completa + site</div>
+        <ul>
+          <li>Google Meu Negócio</li>
+          <li>WhatsApp Business</li>
+          <li>Instagram</li>
+          <li>Site Simples</li>
+          <li>Landing Page (opcional)</li>
+          <li>Agenda Inteligente (opcional)</li>
+          <li>Manutencao mensal</li>
+        </ul>
+      </div>
+      <div class="pack premium">
+        <div class="pack-name">Premium</div>
+        <div class="pack-tagline">Presença total + conversão</div>
+        <ul>
+          <li>Todos os entregáveis Pro</li>
+          <li>Landing Page com tracking</li>
+          <li>Agenda Inteligente Integrada</li>
+          <li>Manutencao mensal completa</li>
+          <li>Relatório de performance</li>
+          <li>Testes A/B leves</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Diferenciais e valores -->
+  <section>
+    <h2>6. Diferenciais e Valores</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Diferenciais competitivos</h3>
+        <div class="pills">
+          <span class="pill">Foco em pequeno negócio</span>
+          <span class="pill">Linguagem simples</span>
+          <span class="pill">Implementação prática</span>
+          <span class="pill gold">Uso inteligente de automações</span>
+          <span class="pill">Ciclo curto de entrega</span>
+          <span class="pill gold">Quick Win em 48h</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Valores da empresa</h3>
+        <div class="pills">
+          <span class="pill green">Simplicidade</span>
+          <span class="pill green">Praticidade</span>
+          <span class="pill green">Eficiência</span>
+          <span class="pill green">Acessibilidade</span>
+          <span class="pill violet">Ética</span>
+          <span class="pill violet">Educação tecnológica</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Estratégia de crescimento -->
+  <section>
+    <h2>7. Estratégia de Crescimento</h2>
+    <div class="card-grid cols4">
+      <div class="card">
+        <h3>Parcerias</h3>
+        <p style="font-size:13px">Profissionais locais que já atendem o mesmo público-alvo</p>
+      </div>
+      <div class="card">
+        <h3>Metodologias proprias</h3>
+        <p style="font-size:13px">SpinFlow aplicado — processos replicáveis e escaláveis</p>
+      </div>
+      <div class="card">
+        <h3>Treinamentos</h3>
+        <p style="font-size:13px">Workshops e cursos para empreendedores locais</p>
+      </div>
+      <div class="card">
+        <h3>Servicos padronizados</h3>
+        <p style="font-size:13px">Escala via templates e automação operacional</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<nav class="page-nav">
+  <a href="index.html">&#8592; Inicio</a>
+  <a href="index.html">Indice</a>
+  <a href="02-arquitetura-spinflow.html">Arquitetura SpinFlow &#8594;</a>
+</nav>
+
+<footer>
+  Fonte: 22 - TecnoFácil / 01.01 - TecnoFácil / Descrição da Empresa / TecnoFácil 1.0 - Descrição e Plano de Negocios.md &nbsp;|&nbsp; Status: draft — 2026-05-11
+</footer>
+
+</body>
+</html>

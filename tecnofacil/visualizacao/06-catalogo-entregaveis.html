@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TecnoFácil — Catálogo de Entregáveis Operacionais</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#18212b;--muted:#64717f;--line:#d8dee7;--paper:#ffffff;--page:#f6f8fb;
+    --navy:#12314b;--teal:#28796f;--gold:#b88a1c;--red:#ba3d32;--violet:#6d5b98;
+    --prep:#e7eef6;--prep-b:#6689a8;--init:#fff1cf;--init-b:#b88a1c;
+    --exec:#e1edf8;--exec-b:#2e6f9f;--final:#e0f0ea;--final-b:#28796f;--maint:#eee8f6;--maint-b:#6d5b98;
+  }
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--page);color:var(--ink);line-height:1.55;font-size:14px}
+  a{color:var(--exec-b);text-decoration:none}a:hover{text-decoration:underline}
+
+  header{background:var(--navy);color:#fff;padding:28px 36px 24px;border-bottom:5px solid var(--gold)}
+  .kicker{color:#b8c9d8;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+  header h1{font-size:26px;font-weight:700;margin-bottom:4px}
+  header p.sub{color:#ccd6e0;font-size:13px}
+
+  nav.breadcrumb{background:#fff;border-bottom:1px solid var(--line);padding:10px 36px;font-size:12px;color:var(--muted)}
+  nav.breadcrumb a{color:var(--exec-b)}
+  nav.page-nav{background:#fff;border-top:1px solid var(--line);padding:14px 36px;display:flex;justify-content:space-between;font-size:13px}
+  nav.page-nav a{color:var(--exec-b);font-weight:600}
+
+  /* Layout com sidebar */
+  .layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1100px;margin:0 auto}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:#fff;border-right:1px solid var(--line);padding:24px 16px}
+  .sidebar h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;font-weight:700}
+  .sidebar a{display:block;font-size:13px;padding:8px 10px;border-radius:6px;color:var(--ink);margin-bottom:4px;border-left:3px solid transparent}
+  .sidebar a:hover,.sidebar a.active{background:var(--exec);border-color:var(--exec-b);color:var(--exec-b)}
+  .sidebar .etapa-num{font-size:11px;color:var(--muted);font-weight:700;display:block}
+
+  .main-content{padding:36px 32px}
+  section{margin-bottom:60px;scroll-margin-top:24px}
+  h2.entry-title{font-size:20px;font-weight:700;color:var(--navy);border-bottom:3px solid var(--exec-b);padding-bottom:10px;margin-bottom:24px}
+  h3.sub-title{font-size:13px;font-weight:700;color:var(--navy);margin:20px 0 10px;text-transform:uppercase;letter-spacing:.5px}
+
+  .what-is{background:var(--prep);border-left:4px solid var(--prep-b);padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:20px;font-size:13px}
+
+  /* Checklist */
+  .checklist{list-style:none;margin-bottom:16px}
+  .checklist li{padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;display:flex;align-items:flex-start;gap:10px}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:"□";font-size:14px;color:var(--muted);flex-shrink:0;margin-top:1px}
+
+  /* SOP */
+  .sop-list{list-style:none;counter-reset:sop;margin-bottom:16px}
+  .sop-list li{counter-increment:sop;padding:7px 0 7px 36px;position:relative;border-bottom:1px solid var(--line);font-size:13px}
+  .sop-list li:last-child{border-bottom:none}
+  .sop-list li::before{content:counter(sop);position:absolute;left:0;top:7px;background:var(--exec-b);color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .sop-activity{font-weight:600;color:var(--navy)}
+
+  /* Aceite */
+  .aceite{background:var(--final);border-left:4px solid var(--final-b);padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:16px}
+  .aceite h3{color:var(--teal);margin-bottom:8px;font-size:13px}
+  .aceite ul{list-style:none}
+  .aceite ul li::before{content:"✓  ";color:var(--teal);font-weight:700}
+  .aceite ul li{font-size:13px;padding:3px 0}
+
+  /* Output */
+  .output-box{background:var(--navy);color:#e8f0f7;font-family:monospace;font-size:12px;padding:12px 16px;border-radius:6px;margin-bottom:16px;line-height:1.7}
+
+  /* Pack table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+  th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-size:12px;font-weight:600}
+  td{padding:8px 12px;border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#f9fbfd}
+
+  /* Pills */
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--exec);border:1px solid var(--exec-b);color:var(--navy)}
+
+  /* Tempo */
+  .tempo{display:inline-block;background:var(--init);border:1px solid var(--init-b);padding:8px 16px;border-radius:6px;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:16px}
+  .tempo span{font-size:11px;font-weight:400;color:var(--muted);display:block}
+
+  /* Separador */
+  .card-sep{border:none;border-top:2px dashed var(--line);margin:0 0 48px 0}
+
+  footer{background:#fff;border-top:1px solid var(--line);padding:14px 36px;font-size:11px;color:var(--muted)}
+
+  /* Conformidade box */
+  .conformidade{background:var(--maint);border:1px solid var(--maint-b);border-radius:8px;padding:20px 24px;margin-top:48px}
+  .conformidade h3{color:var(--violet);margin-bottom:14px;font-size:15px}
+  .conformidade ul{list-style:none}
+  .conformidade ul li{padding:5px 0;border-bottom:1px solid rgba(109,91,152,.15);font-size:13px}
+  .conformidade ul li:last-child{border-bottom:none}
+  .conformidade ul li::before{content:"◆  ";color:var(--violet);font-size:10px}
+
+  @media(max-width:760px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}
+    header,.main-content{padding-left:18px;padding-right:18px}
+    nav.breadcrumb,nav.page-nav{padding:10px 18px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">TecnoFácil 1.0 — Demonstração Visual</div>
+  <h1>Catálogo de Entregáveis Operacionais</h1>
+  <p class="sub">Manual de chão de fábrica — SOP técnico dos 6 entregáveis da Fase 3 do Processo Operacional</p>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Inicio</a> &rsaquo; <a href="04-setor-operacional.html">Setor Operacional</a> &rsaquo; Catálogo de Entregáveis
+</nav>
+
+<div class="layout">
+  <aside class="sidebar">
+    <h4>Etapas da Fase 3</h4>
+    <a href="#gmb"><span class="etapa-num">Etapa 3.1</span>Google Meu Negócio</a>
+    <a href="#whatsapp"><span class="etapa-num">Etapa 3.2</span>WhatsApp Business</a>
+    <a href="#instagram"><span class="etapa-num">Etapa 3.3</span>Instagram</a>
+    <a href="#site"><span class="etapa-num">Etapa 3.4</span>Site Simples</a>
+    <a href="#landing"><span class="etapa-num">Etapa 3.5</span>Landing Page</a>
+    <a href="#agenda"><span class="etapa-num">Etapa 3.6</span>Agenda Inteligente</a>
+    <br>
+    <a href="#conformidade" style="border-left-color:var(--maint-b);background:var(--maint)">Conformidade transversal</a>
+    <br>
+    <a href="05-pacotes-escopo-slas.html" style="font-size:12px;color:var(--muted)">&#8594; Ver Pacotes x Escopo</a>
+    <a href="04-setor-operacional.html" style="font-size:12px;color:var(--muted)">&#8594; Ver Processo Operacional</a>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- 3.1 GMB -->
+    <section id="gmb">
+      <h2 class="entry-title">3.1 &mdash; Google Meu Negócio</h2>
+      <div class="what-is">
+        Perfil empresarial otimizado no Google Business Profile. Para o cliente típico da TecnoFácil — pequeno negócio local — é tipicamente o <strong>primeiro ponto de contato digital</strong> de um cliente final pesquisando por serviço na região. Aparece em busca Google e Google Maps, recebe avaliações, mostra horários, fotos e contato direto.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Nome comercial padronizado e consistente</li>
+        <li>Categoria principal corretamente classificada</li>
+        <li>Categorias secundárias (até 9) para cobertura de busca</li>
+        <li>Endereço verificado com pin preciso no Maps</li>
+        <li>Horários de funcionamento atualizados (incluindo feriados)</li>
+        <li>Telefone e WhatsApp atualizados</li>
+        <li>Site/landing page vinculados (quando existem)</li>
+        <li>Descrição (até 750 caracteres) no tom de voz do cliente</li>
+        <li>Mínimo de 10 fotos de qualidade (fachada, interior, equipe, produtos)</li>
+        <li>Logo carregado e foto de capa selecionada</li>
+        <li>Atributos relevantes ativados (acessibilidade, pagamento, Wi-Fi, estacionamento)</li>
+        <li>Serviços/produtos cadastrados na seção dedicada</li>
+        <li>Mensagem (chat) ativada e roteada</li>
+        <li>Primeira postagem publicada</li>
+        <li>Plaquinha QR Code de avaliação entregue ao cliente</li>
+        <li>Solicitação inicial de avaliações disparada (quando aplicável)</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.1.1 — Auditar Perfil Existente</span> (se já há perfil — identificar lacunas)</li>
+        <li><span class="sop-activity">A3.1.2 — Reclamar/Criar Perfil</span> (verificação por carta ou telefone do Google)</li>
+        <li><span class="sop-activity">A3.1.3 — Aplicar Padronização e Otimização</span> (preencher todos os itens do checklist)</li>
+        <li><span class="sop-activity">A3.1.4 — Carregar Fotos</span> (tarefa individual por categoria)</li>
+        <li><span class="sop-activity">A3.1.5 — Configurar Mensagens e Atributos</span></li>
+        <li><span class="sop-activity">A3.1.6 — Publicar Primeira Postagem</span></li>
+        <li><span class="sop-activity">A3.1.7 — Produzir Arte e Imprimir Plaquinha QR Code de Avaliação</span></li>
+        <li><span class="sop-activity">A3.1.8 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Cliente verificou o próprio perfil em busca pelo nome no Google e aprovou</li>
+          <li>Todos os componentes mínimos do checklist presentes</li>
+          <li>Plaquinha QR Code em mãos do cliente (digital ou impressa)</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">Perfil Google Meu Negócio Otimizado (link público)<br>+ Plaquinha QR Code (arquivo de arte e/ou impressão)<br>+ Print/Vídeo de Validação do cliente</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico</strong></td><td>Completo, sem QR Code impresso (entrega arquivo digital)</td></tr>
+        <tr><td><strong>Pro</strong></td><td>Completo + QR Code impresso (até 2 plaquinhas)</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completo + QR Code impresso premium + monitoramento ativo na Fase 5</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills">
+        <span class="pill">Google Business Profile</span><span class="pill">Canva</span><span class="pill">Gerador QR Code</span>
+      </div>
+
+      <div class="tempo" style="margin-top:20px">3–5 dias úteis <span>Variação: verificação do Google pode chegar a 14 dias (carta)</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- 3.2 WhatsApp -->
+    <section id="whatsapp">
+      <h2 class="entry-title">3.2 &mdash; WhatsApp Business</h2>
+      <div class="what-is">
+        Conta WhatsApp Business configurada com perfil empresarial, mensagens automáticas, etiquetas e catálogo. Para a maioria dos clientes, <strong>é o canal principal de atendimento</strong> — onde a venda do cliente final acontece de fato.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Migração de conta pessoal para WhatsApp Business (se aplicável) — ou criação nova</li>
+        <li>Nome, descrição e endereço da empresa preenchidos</li>
+        <li>Categoria correta selecionada</li>
+        <li>Horário de funcionamento configurado</li>
+        <li>Foto de perfil padronizada (mesma identidade visual)</li>
+        <li>E-mail e site vinculados</li>
+        <li>Mensagem de saudação automática (primeira mensagem de contato novo)</li>
+        <li>Mensagem de ausência configurada (fora do horário)</li>
+        <li>Respostas rápidas para perguntas frequentes (preço, localização, agendamento)</li>
+        <li>Etiquetas padronizadas criadas (Novo Lead, Em Atendimento, etc.)</li>
+        <li>Catálogo de produtos/serviços quando aplicável</li>
+        <li>Link wa.me gerado para uso em outras plataformas</li>
+        <li>Plaquinha QR Code para WhatsApp</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.2.1 — Configurar Perfil Empresarial</span></li>
+        <li><span class="sop-activity">A3.2.2 — Escrever e Configurar Mensagens Automáticas</span> (alinhamento de tom de voz)</li>
+        <li><span class="sop-activity">A3.2.3 — Criar Respostas Rápidas</span></li>
+        <li><span class="sop-activity">A3.2.4 — Criar e Padronizar Etiquetas</span></li>
+        <li><span class="sop-activity">A3.2.5 — Cadastrar Catálogo</span> (se aplicável — tarefa individual por produto)</li>
+        <li><span class="sop-activity">A3.2.6 — Gerar Link wa.me e Plaquinha QR Code</span></li>
+        <li><span class="sop-activity">A3.2.7 — Treinamento básico do cliente</span> (mini-walkthrough de etiquetas e respostas)</li>
+        <li><span class="sop-activity">A3.2.8 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Mensagens automáticas testadas pelo cliente (ele mesmo envia e recebe)</li>
+          <li>Etiquetas funcionando</li>
+          <li>Link wa.me operacional</li>
+          <li>Cliente sabe usar o básico (etiquetas, respostas rápidas)</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">WhatsApp Business Configurado<br>+ Link wa.me / Link com mensagem pré-preenchida<br>+ Plaquinha QR Code WhatsApp<br>+ Validação</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico</strong></td><td>Completo, sem catálogo elaborado</td></tr>
+        <tr><td><strong>Pro</strong></td><td>Completo + catálogo inicial (até 10 itens) + plaquinha QR impressa</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completo + catálogo extenso (até 30 itens) + plaquinha premium + monitoramento Fase 5</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills"><span class="pill">WhatsApp Business</span><span class="pill">Canva</span><span class="pill">Gerador wa.me</span></div>
+      <div class="tempo" style="margin-top:20px">2–3 dias úteis <span>Gargalo: validação requer que o cliente teste do próprio celular</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- 3.3 Instagram -->
+    <section id="instagram">
+      <h2 class="entry-title">3.3 &mdash; Instagram</h2>
+      <div class="what-is">
+        Perfil profissional otimizado para conversão — bio com proposta de valor clara e CTA, destaques como menu, identidade visual consistente e primeiros posts âncora que estabelecem o repertório do negócio.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Conta convertida para Profissional (Business ou Creator)</li>
+        <li>Categoria correta selecionada</li>
+        <li>Foto de perfil padronizada (mesma identidade visual)</li>
+        <li>Nome de exibição otimizado para busca</li>
+        <li>@username consistente com identidade</li>
+        <li>Bio reescrita: proposta de valor + prova + CTA explícito</li>
+        <li>Link na bio (Linktree/Beacons) apontando para WhatsApp + landing page</li>
+        <li>Mínimo de 3 destaques com capa visual padronizada</li>
+        <li>Mínimo de 5 posts âncora publicados na primeira leva</li>
+        <li>Capas dos posts com identidade visual coerente</li>
+        <li>Plaquinha QR Code para perfil Instagram</li>
+        <li>(Premium) Calendário editorial dos primeiros 30 dias</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.3.1 — Auditar Perfil Existente</span></li>
+        <li><span class="sop-activity">A3.3.2 — Converter para Profissional e Ajustar Categoria</span></li>
+        <li><span class="sop-activity">A3.3.3 — Reescrever Bio</span> (tarefa de copy)</li>
+        <li><span class="sop-activity">A3.3.4 — Produzir/Selecionar Foto de Perfil</span></li>
+        <li><span class="sop-activity">A3.3.5 — Configurar Link na Bio</span></li>
+        <li><span class="sop-activity">A3.3.6 — Produzir Capas de Destaques</span></li>
+        <li><span class="sop-activity">A3.3.7 — Organizar Destaques</span></li>
+        <li><span class="sop-activity">A3.3.8 — Produzir e Publicar Primeiros Posts Âncora</span> (tarefa individual por post)</li>
+        <li><span class="sop-activity">A3.3.9 — Produzir Plaquinha QR Code do Perfil</span></li>
+        <li><span class="sop-activity">A3.3.10 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Bio aprovada pelo cliente</li>
+          <li>Destaques publicados e visualmente coerentes</li>
+          <li>5 posts âncora publicados e aprovados</li>
+          <li>Plaquinha QR em mãos</li>
+          <li>Cliente sabe operar (postar, responder DM, criar destaque)</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">Perfil Instagram Otimizado<br>+ 5 Posts Âncora Publicados<br>+ Plaquinha QR Code<br>+ Material de Treinamento Básico<br>+ Validação</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico (opcional)</strong></td><td>Bio + link na bio + 3 posts âncora, sem destaques completos</td></tr>
+        <tr><td><strong>Pro</strong></td><td>Completo conforme checklist (5 posts, destaques, plaquinha)</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completo + calendário editorial 30 dias + plaquinha premium + monitoramento Fase 5</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills"><span class="pill">Instagram</span><span class="pill">Canva / Figma</span><span class="pill">Linktree / Beacons</span><span class="pill">Meta Business Suite</span></div>
+      <div class="tempo" style="margin-top:20px">5–7 dias úteis <span>Gargalo: produção visual dos posts (depende de fotos do cliente)</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- 3.4 Site -->
+    <section id="site">
+      <h2 class="entry-title">3.4 &mdash; Site Simples</h2>
+      <div class="what-is">
+        Site institucional de <strong>uma única página</strong>, mobile-first. Objetivo: apresentar o negócio rapidamente e direcionar o visitante para o canal de atendimento (WhatsApp ou agenda). Não substitui a landing page — é a presença institucional permanente com domínio próprio.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Domínio próprio configurado (ou subdomínio gratuito equivalente)</li>
+        <li>Estrutura de uma página: Hero, Sobre, Serviços, Prova social, Localização, CTA final</li>
+        <li>Identidade visual coerente com Instagram e Google Meu Negócio</li>
+        <li>CTA primário (botão WhatsApp ou Agendar) em destaque acima da dobra</li>
+        <li>CTA secundário (e-mail ou telefone) presente</li>
+        <li>SEO básico: meta-title, meta-description, h1 com keyword principal</li>
+        <li>Tag de tracking ativa (GA4 ou similar)</li>
+        <li>Performance mobile aceitável (Core Web Vitals passando)</li>
+        <li>Política de Privacidade básica (LGPD compliance mínimo)</li>
+        <li>Links para Instagram, WhatsApp e Google Meu Negócio</li>
+        <li>Teste em diferentes navegadores e tamanhos de tela</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.4.1 — Configurar Domínio e Plataforma</span> (Carrd, Wix, Strikingly ou Astro/Vercel)</li>
+        <li><span class="sop-activity">A3.4.2 — Coletar/Confirmar Assets Visuais</span> (logo, fotos, paleta)</li>
+        <li><span class="sop-activity">A3.4.3 — Escrever Copy</span></li>
+        <li><span class="sop-activity">A3.4.4 — Montar Estrutura no Builder</span></li>
+        <li><span class="sop-activity">A3.4.5 — Configurar SEO Básico</span></li>
+        <li><span class="sop-activity">A3.4.6 — Configurar Tracking</span></li>
+        <li><span class="sop-activity">A3.4.7 — Testar Performance e Responsividade</span></li>
+        <li><span class="sop-activity">A3.4.8 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+        <li><span class="sop-activity">A3.4.9 — Publicar</span></li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Site no ar em URL final</li>
+          <li>Aprovação do cliente registrada</li>
+          <li>Performance mobile passando no PageSpeed Insights</li>
+          <li>CTA primário rastreado e funcionando</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">Site Publicado (URL)<br>+ Credenciais de Acesso à Plataforma (arquivo seguro)<br>+ Tag de Tracking Ativa<br>+ Validação</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico</strong></td><td>Fora de escopo</td></tr>
+        <tr><td><strong>Pro</strong></td><td>Completo conforme checklist</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completo + duas revisões anuais agendadas em Fase 5</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills"><span class="pill">Carrd</span><span class="pill">Strikingly / Wix</span><span class="pill">Astro + Vercel</span><span class="pill">registro.br</span><span class="pill">Google Analytics 4</span><span class="pill">TinyPNG</span></div>
+      <div class="tempo" style="margin-top:20px">7–10 dias úteis <span>Gargalo: aprovação iterativa de copy e visual pelo cliente</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- 3.5 Landing -->
+    <section id="landing">
+      <h2 class="entry-title">3.5 &mdash; Landing Page com Redirecionamento</h2>
+      <div class="what-is">
+        Página otimizada para <strong>uma única ação de conversão</strong> — clicar e ir para o canal de atendimento (WhatsApp ou agenda). Diferente do Site Simples (institucional), o foco é exclusivamente converter visitante em contato. Destino típico de anúncios pagos e link no bio.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Hero: proposta de valor 1 linha + sub-headline + CTA proeminente</li>
+        <li>CTA único repetido em pelo menos 3 pontos da página</li>
+        <li>Lista de benefícios diretos (3–5 bullets curtos)</li>
+        <li>Prova social compacta (depoimento, estrelas, número de clientes)</li>
+        <li>Foto/imagem do serviço</li>
+        <li>Seção "Como funciona" em 3 passos</li>
+        <li>FAQ compacto (3–5 perguntas)</li>
+        <li>CTA final reforçado</li>
+        <li>Tracking de cliques no CTA (GTM / GA4 evento custom)</li>
+        <li>Redirecionamento: CTA aponta para link wa.me com mensagem pré-preenchida OU agenda</li>
+        <li>Performance mobile excelente (carrega em menos de 2s)</li>
+        <li>Sem links externos que dispersem (uma única saída)</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.5.1 — Definir o Canal de Redirecionamento</span> (WhatsApp ou agenda)</li>
+        <li><span class="sop-activity">A3.5.2 — Escrever Copy de Conversão</span></li>
+        <li><span class="sop-activity">A3.5.3 — Selecionar Visual Principal</span></li>
+        <li><span class="sop-activity">A3.5.4 — Montar Estrutura no Builder</span></li>
+        <li><span class="sop-activity">A3.5.5 — Configurar Tracking de Cliques no CTA</span></li>
+        <li><span class="sop-activity">A3.5.6 — Otimizar Performance</span></li>
+        <li><span class="sop-activity">A3.5.7 — Testar Fluxo de Redirecionamento</span> (clique → chegada no WhatsApp/agenda)</li>
+        <li><span class="sop-activity">A3.5.8 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+        <li><span class="sop-activity">A3.5.9 — Publicar e Divulgar Link</span></li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Landing no ar</li>
+          <li>Tracking de cliques no CTA ativo e registrando</li>
+          <li>Fluxo de redirecionamento testado ponta a ponta</li>
+          <li>Cliente aprovou copy e visual</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">Landing Page Publicada (URL)<br>+ Configuração de Tracking<br>+ Validação</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico</strong></td><td>Fora de escopo</td></tr>
+        <tr><td><strong>Pro (opcional)</strong></td><td>Completa conforme checklist</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completa + revisão semestral + eventual teste A/B leve</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills"><span class="pill">Carrd</span><span class="pill">Framer</span><span class="pill">GA4 + GTM</span><span class="pill">wa.me com mensagem pré-preenchida</span></div>
+      <div class="tempo" style="margin-top:20px">5–7 dias úteis <span>Mais rápido que o Site; exige mais cuidado no copy de conversão</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- 3.6 Agenda -->
+    <section id="agenda">
+      <h2 class="entry-title">3.6 &mdash; Agenda Inteligente Integrada</h2>
+      <div class="what-is">
+        Sistema online de marcação de horários que respeita a disponibilidade real do(s) prestador(es), com regras configuradas (intervalos, antecedência, cancelamento, dias bloqueados), integrável com Google Calendar. <strong>Substitui o telefonema/mensagem manual</strong> para marcar horário.
+      </div>
+
+      <h3 class="sub-title">Componentes mínimos (checklist)</h3>
+      <ul class="checklist">
+        <li>Plataforma escolhida e configurada (Calendly, Cal.com, SimplyBook.me)</li>
+        <li>Disponibilidade base do prestador configurada (dias, faixas horárias)</li>
+        <li>Duração padrão dos serviços cadastrados</li>
+        <li>Intervalo automático entre atendimentos (buffer)</li>
+        <li>Antecedência mínima para agendamento</li>
+        <li>Janela máxima de agendamento</li>
+        <li>Bloqueios para férias/folgas configurados</li>
+        <li>Confirmação automática por e-mail para o cliente final</li>
+        <li>Lembrete automático antes do horário (24h e/ou 2h)</li>
+        <li>Política de cancelamento configurada</li>
+        <li>Integração com WhatsApp: link da agenda nas mensagens automáticas</li>
+        <li>Integração bidirecional com Google Calendar</li>
+        <li>(Opcional) Botão "Agendar" no Google Meu Negócio apontando para a agenda</li>
+        <li>Página de agendamento com identidade visual coerente</li>
+      </ul>
+
+      <h3 class="sub-title">Atividades-tipo (SOP)</h3>
+      <ol class="sop-list">
+        <li><span class="sop-activity">A3.6.1 — Mapear Regras de Agendamento com o Cliente</span> (entrevista específica: horários, durações, intervalos, exceções, políticas)</li>
+        <li><span class="sop-activity">A3.6.2 — Escolher Plataforma Adequada</span> (volume, complexidade, integrações, orçamento)</li>
+        <li><span class="sop-activity">A3.6.3 — Configurar Plataforma</span> (tarefas individuais por categoria)</li>
+        <li><span class="sop-activity">A3.6.4 — Integrar com Google Calendar do Prestador</span></li>
+        <li><span class="sop-activity">A3.6.5 — Configurar Integração com WhatsApp Business</span></li>
+        <li><span class="sop-activity">A3.6.6 — Conectar Botão de Agendamento ao Google Meu Negócio</span></li>
+        <li><span class="sop-activity">A3.6.7 — Personalizar Página de Agendamento</span></li>
+        <li><span class="sop-activity">A3.6.8 — Testar Fluxo Completo</span> (agendamento → confirmação → lembrete → cancelamento → bloqueio bidirecional)</li>
+        <li><span class="sop-activity">A3.6.9 — Treinamento do Prestador</span> (walkthrough dedicado — maior fricção de adoção)</li>
+        <li><span class="sop-activity">A3.6.10 — Validação com Cliente</span> (Bloqueada por Externo)</li>
+      </ol>
+
+      <div class="aceite">
+        <h3>Critério de aceite</h3>
+        <ul>
+          <li>Cliente final consegue agendar do início ao fim sem ajuda</li>
+          <li>Prestador recebe a notificação correta</li>
+          <li>Bloqueios bilaterais (Calendar ↔ Agenda) funcionando</li>
+          <li>Prestador demonstra saber operar em treinamento</li>
+          <li>Integração com WhatsApp testada</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-title">Output formal</h3>
+      <div class="output-box">Sistema de Agenda Operando (URL do link de marcação)<br>+ Documento de Regras de Agendamento Configuradas<br>+ Material de Treinamento do Prestador<br>+ Validação</div>
+
+      <h3 class="sub-title">Variações por pacote</h3>
+      <table>
+        <tr><th>Pacote</th><th>Entrega</th></tr>
+        <tr><td><strong>Básico</strong></td><td>Fora de escopo</td></tr>
+        <tr><td><strong>Pro (opcional)</strong></td><td>Completo com plataforma gratuita (Calendly free / Cal.com)</td></tr>
+        <tr><td><strong>Premium</strong></td><td>Completo + plataforma paga quando volume exigir + ajustes mensais em Fase 5 + relatório de uso</td></tr>
+      </table>
+
+      <h3 class="sub-title">Ferramentas</h3>
+      <div class="pills"><span class="pill">Calendly</span><span class="pill">Cal.com</span><span class="pill">SimplyBook.me</span><span class="pill">Google Calendar</span><span class="pill">Zapier (Premium)</span></div>
+      <div class="tempo" style="margin-top:20px">7–10 dias úteis <span>Gargalo: capturar todas as regras do prestador com precisão</span></div>
+    </section>
+    <hr class="card-sep">
+
+    <!-- Conformidade -->
+    <section id="conformidade">
+      <div class="conformidade">
+        <h3>Conformidade Transversal — Padroes aplicáveis a todos os 6 entregáveis</h3>
+        <ul>
+          <li><strong>Identidade visual coerente</strong> entre Google, WhatsApp, Instagram, Site, Landing e Agenda</li>
+          <li><strong>CTA único bem definido</strong> em cada entregável — visitante sabe a próxima ação</li>
+          <li><strong>Mobile-first</strong> — todo entregável testado no celular antes do desktop</li>
+          <li><strong>LGPD compliance básica</strong> — avisos, política de privacidade, consentimento em formulários</li>
+          <li><strong>Rastreabilidade</strong> — tracking básico sempre que possível para alimentar o Health Score Operacional</li>
+          <li><strong>Acesso seguro</strong> — credenciais entregues em arquivo separado, nunca em WhatsApp</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="page-nav">
+  <a href="05-pacotes-escopo-slas.html">&#8592; Pacotes e SLAs</a>
+  <a href="index.html">Indice</a>
+  <a href="07-fluxo-outputs-handoff.html">Fluxo de Outputs &#8594;</a>
+</nav>
+
+<footer>
+  Fonte: 22.1 - SpinFlow TecnoFácil / 07 - Catálogo de Entregáveis Operacionais.md &nbsp;|&nbsp; Status: draft — 2026-05-11
+</footer>
+
+</body>
+</html>

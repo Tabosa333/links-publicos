@@ -96,6 +96,44 @@
     .card.spinflow .card-arrow { color: var(--spinflow); }
     .card.tecno    .card-arrow { color: var(--tecno); }
 
+    .card.feature {
+      padding: 28px 28px 24px;
+      margin-bottom: 28px;
+      border-color: var(--tecno);
+      box-shadow: 0 2px 16px var(--tecno-glow);
+    }
+    .card.feature .card-title { font-size: 1.15rem; }
+    .card.feature .card-desc  { font-size: 0.92rem; }
+
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--tecno);
+      color: #0d0f14;
+      border-radius: 10px;
+      vertical-align: middle;
+    }
+
+    .subsection-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 28px 0 14px;
+    }
+
+    .cards.small { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .cards.small .card { padding: 16px 18px 14px; gap: 6px; }
+    .cards.small .card-title { font-size: 0.88rem; }
+    .cards.small .card-desc  { font-size: 0.78rem; }
+    .cards.small .card-arrow { font-size: 0.72rem; }
+
     footer {
       max-width: 960px; margin: 0 auto;
       padding: 32px 40px 0;
@@ -177,6 +215,69 @@
       <h2>TecnoFácil</h2>
       <div class="divider"></div>
     </div>
+
+    <!-- Destaque: Visualização SpinFlow TecnoFácil 1.0 -->
+    <a class="card tecno feature" target="_blank" href="tecnofacil/visualizacao/index.html">
+      <div class="card-icon">🧭</div>
+      <div class="card-title">TecnoFácil 1.0 — Visualização SpinFlow <span class="badge">Novo</span></div>
+      <div class="card-desc">Macro-visualização da estrutura empresarial e metodológica: identidade, arquitetura SpinFlow, setores comercial e operacional, pacotes, entregáveis, handoff e roadmap. 8 páginas navegáveis · Leva 1 (Draft) · 2026-05-19.</div>
+      <div class="card-arrow">Abrir índice &rarr;</div>
+    </a>
+
+    <div class="subsection-title">Páginas da visualização</div>
+    <div class="cards small">
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/01-tecnofacil-empresa.html">
+        <div class="card-title">01 · A Empresa</div>
+        <div class="card-desc">Identidade, problema, público-alvo, catálogo de serviços e modelo de negócio.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/02-arquitetura-spinflow.html">
+        <div class="card-title">02 · Arquitetura SpinFlow</div>
+        <div class="card-desc">Mapa hierárquico, diagrama de convergência dos funis e premissas de modelagem.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/03-setor-comercial.html">
+        <div class="card-title">03 · Setor Comercial</div>
+        <div class="card-desc">Funis Presencial e Redes Sociais, ICP e outputs que alimentam o Operacional.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/04-setor-operacional.html">
+        <div class="card-title">04 · Setor Operacional</div>
+        <div class="card-desc">Prestação de serviços, Gantt por fase, Quick Win 48h e detalhe de cada etapa.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/05-pacotes-escopo-slas.html">
+        <div class="card-title">05 · Pacotes, Escopo e SLAs</div>
+        <div class="card-desc">Básico, Pro e Premium · matriz de escopo, SLAs e cadências de manutenção.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/06-catalogo-entregaveis.html">
+        <div class="card-title">06 · Catálogo de Entregáveis</div>
+        <div class="card-desc">Seis fichas técnicas: checklist, SOP, critérios de aceite e variações por pacote.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/07-fluxo-outputs-handoff.html">
+        <div class="card-title">07 · Outputs e Handoff</div>
+        <div class="card-desc">Fluxo de outputs do Comercial ao Operacional, artefatos de handoff e loop de feedback.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+      <a class="card tecno" target="_blank" href="tecnofacil/visualizacao/08-roadmap-maturidade.html">
+        <div class="card-title">08 · Roadmap de Maturidade</div>
+        <div class="card-desc">Quatro levas de implementação, DOO da Leva 1, perguntas abertas e matriz de riscos.</div>
+        <div class="card-arrow">Abrir &rarr;</div>
+      </a>
+
+    </div>
+
+    <div class="subsection-title">Outros materiais</div>
     <div class="cards">
 
       <a class="card tecno" target="_blank" href="tecnofacil/landing.html">
